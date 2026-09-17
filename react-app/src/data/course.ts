@@ -3,7 +3,7 @@
 
 export const COURSE = {
   repo: "CS_AgenticAIFoundations",
-  heading: "Agentic AI and Intelligent Systems",
+  heading: "Agentic AI Foundations",
   siteTitle: "Agentic AI Foundations",
   tagline:
     "Upper-level undergraduate / graduate · 3 s.h. · Agents, tool calling, orchestration, AI-assisted coding, evaluation, responsible use",

@@ -62,7 +62,7 @@ export default function App() {
         <MainMenu />
         <a className="brand" href="#/">
           <h1>&#129302; {COURSE.siteTitle}</h1>
-          <div className="sub">{COURSE.heading} · course design</div>
+          <div className="sub">Course design · upper-level undergraduate / graduate</div>
         </a>
         <nav className="top-links">
           {TOP_LINKS.map((l) => (

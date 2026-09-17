@@ -1,7 +1,7 @@
-# CS_AgenticAIFoundations — Agentic AI and Intelligent Systems
+# CS_AgenticAIFoundations — Agentic AI Foundations
 
 Course site for a proposed upper-level undergraduate / graduate course,
-**Agentic AI and Intelligent Systems**: LLM foundations for engineers, tool
+**Agentic AI Foundations**: LLM foundations for engineers, tool
 calling and the agent loop, retrieval and memory, the Model Context Protocol,
 multi-agent orchestration, AI-assisted software engineering, evaluation, and
 security and responsible use — ending in evaluated team projects.

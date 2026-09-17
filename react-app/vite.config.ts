@@ -20,7 +20,7 @@ export default defineConfig({
         name: "Agentic AI Foundations",
         short_name: "Agentic AI",
         description:
-          "Course design for Agentic AI and Intelligent Systems — agents, tool calling, orchestration, AI-assisted coding, evaluation, and responsible use.",
+          "Agentic AI Foundations course design — agents, tool calling, orchestration, AI-assisted coding, evaluation, and responsible use.",
         theme_color: "#1f1b3a",
         background_color: "#1f1b3a",
         display: "standalone",
