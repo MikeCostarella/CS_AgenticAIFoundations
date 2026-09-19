@@ -57,3 +57,15 @@ export const RESOURCE_GROUPS = [
   "Frameworks and tools",
   "Risk and responsible use",
 ] as const;
+
+/** Matches a [[resource-id]] reference inside page prose. */
+export const REF_PATTERN = /\[\[([a-z0-9-]+)\]\]/g;
+
+/**
+ * Replace [[resource-id]] references with the resource's plain label.
+ * Used by the search index; the UI uses components/RichText.tsx instead so
+ * the reference renders as a real link.
+ */
+export function resolveRefs(text: string): string {
+  return text.replace(REF_PATTERN, (whole, id: string) => RESOURCE_BY_ID[id]?.label ?? whole);
+}

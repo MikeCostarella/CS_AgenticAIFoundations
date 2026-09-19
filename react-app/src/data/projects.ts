@@ -1,6 +1,8 @@
 // Example final projects: the kinds of workflows a new CS or IT graduate
 // should be able to build with agentic AI.
 
+import type { PageSection } from "./types";
+
 export interface ProjectIdea {
   title: string;
   track: "IT" | "CS" | "CS / IT";
@@ -87,4 +89,23 @@ export const PROJECT_REQUIREMENTS = [
   "A responsible-use statement: intended users, limits, privacy, and human oversight",
   "A public or instructor-visible repository with setup instructions and an AI-assistance log",
   "A 10-minute demo that shows traces and at least one handled failure",
+];
+
+// Closing prose sections of the Projects page, kept as data so they are
+// searchable and anchor-linkable.
+export const PROJECT_NOTES: PageSection[] = [
+  {
+    id: "midterm",
+    heading: "Midterm project (week 8)",
+    paras: [
+      "A single agent with tool calling, retrieval, and at least one MCP or enterprise integration, demonstrated with traces and described in a short design document. Most teams grow their midterm agent into their final project.",
+    ],
+  },
+  {
+    id: "industry-partners",
+    heading: "Industry partners",
+    paras: [
+      "Employer and community partners are welcome to suggest project problems, provide realistic (non-sensitive) data, give guest lectures, or join final demos as reviewers.",
+    ],
+  },
 ];

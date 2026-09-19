@@ -40,3 +40,16 @@ export interface UnitDef {
   theme: string;
   modules: ModuleDef[];
 }
+
+/**
+ * A prose section of a static page (Tools & Access, Projects). Held as data
+ * so the page and the search index render from the same source.
+ * Text may contain [[resource-id]] references — see resolveRefs().
+ */
+export interface PageSection {
+  /** Stable id: also the scroll anchor, e.g. #/tools?s=cost-controls. */
+  id: string;
+  heading: string;
+  paras?: string[];
+  items?: string[];
+}

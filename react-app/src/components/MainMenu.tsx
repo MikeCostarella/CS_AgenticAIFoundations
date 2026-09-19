@@ -63,6 +63,7 @@ export default function MainMenu() {
             {section === "view" && (
               <div className="acc-body">
                 <a href="#/">Home</a>
+                <a href="#/search">Search the course</a>
                 <a href="#/syllabus">Syllabus &amp; weekly schedule</a>
                 <a href="#/projects">Projects</a>
                 <a href="#/tools">Tools &amp; Access</a>

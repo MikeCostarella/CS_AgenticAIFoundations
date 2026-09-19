@@ -5,6 +5,8 @@ import ModulePage from "./components/ModulePage";
 import ProjectsPage from "./components/ProjectsPage";
 import ToolsPage from "./components/ToolsPage";
 import ResourcesPage from "./components/ResourcesPage";
+import SearchPage from "./components/SearchPage";
+import SearchBox from "./components/SearchBox";
 import BuildStamp from "./components/BuildStamp";
 import MainMenu from "./components/MainMenu";
 import { MODULE_BY_ID, UNITS } from "./data/modules";
@@ -12,36 +14,56 @@ import { COURSE } from "./data/course";
 
 // Hash-based routing — no router dependency, and it works on GitHub Pages
 // project sites without any 404 rewriting.
+//
+// A route may carry a query after the path, e.g. "#/search?q=mcp" or
+// "#/m/m03?s=lab", where s is the id of a section to scroll to.
 type Route =
   | { page: "home" }
   | { page: "syllabus" }
   | { page: "projects" }
   | { page: "tools" }
   | { page: "resources" }
+  | { page: "search"; query: string }
   | { page: "module"; id: string };
 
-function parseHash(): Route {
-  const h = window.location.hash;
-  const m = /^#\/m\/([a-z0-9]+)$/.exec(h);
-  if (m && MODULE_BY_ID[m[1]]) return { page: "module", id: m[1] };
-  if (h === "#/syllabus") return { page: "syllabus" };
-  if (h === "#/projects") return { page: "projects" };
-  if (h === "#/tools") return { page: "tools" };
-  if (h === "#/resources") return { page: "resources" };
-  return { page: "home" };
+interface Location {
+  route: Route;
+  /** Section id from ?s=, scrolled to after the page renders. */
+  section: string | null;
+  /** Bumped on every hash event so repeat navigations still scroll. */
+  nonce: number;
 }
 
-function useRoute(): Route {
-  const [route, setRoute] = useState<Route>(parseHash);
+function parseHash(nonce: number): Location {
+  const raw = window.location.hash;
+  const qi = raw.indexOf("?");
+  const path = qi === -1 ? raw : raw.slice(0, qi);
+  const params = new URLSearchParams(qi === -1 ? "" : raw.slice(qi + 1));
+  const section = params.get("s");
+
+  const route = ((): Route => {
+    const m = /^#\/m\/([a-z0-9]+)$/.exec(path);
+    if (m && MODULE_BY_ID[m[1]]) return { page: "module", id: m[1] };
+    if (path === "#/syllabus") return { page: "syllabus" };
+    if (path === "#/projects") return { page: "projects" };
+    if (path === "#/tools") return { page: "tools" };
+    if (path === "#/resources") return { page: "resources" };
+    if (path === "#/search") return { page: "search", query: params.get("q") ?? "" };
+    return { page: "home" };
+  })();
+
+  return { route, section, nonce };
+}
+
+function useLocation(): Location {
+  const [loc, setLoc] = useState<Location>(() => parseHash(0));
   useEffect(() => {
-    const onHash = () => {
-      setRoute(parseHash());
-      window.scrollTo(0, 0);
-    };
+    let n = 0;
+    const onHash = () => setLoc(parseHash(++n));
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
-  return route;
+  return loc;
 }
 
 const TOP_LINKS: { href: string; label: string; page: Route["page"] }[] = [
@@ -53,8 +75,24 @@ const TOP_LINKS: { href: string; label: string; page: Route["page"] }[] = [
 ];
 
 export default function App() {
-  const route = useRoute();
+  const { route, section, nonce } = useLocation();
   const activeModId = route.page === "module" ? route.id : null;
+
+  // Scroll: to the requested section when one is given, otherwise to the top.
+  useEffect(() => {
+    if (section) {
+      const el = document.getElementById(section);
+      if (el) {
+        el.scrollIntoView({ block: "start", behavior: "smooth" });
+        el.classList.add("section-flash");
+        const t = window.setTimeout(() => el.classList.remove("section-flash"), 1600);
+        return () => window.clearTimeout(t);
+      }
+    }
+    // nonce 0 is the first render: leave the browser's own scroll position.
+    if (nonce > 0) window.scrollTo(0, 0);
+    return;
+  }, [route, section, nonce]);
 
   return (
     <div className="app">
@@ -64,6 +102,7 @@ export default function App() {
           <h1>&#129302; {COURSE.siteTitle}</h1>
           <div className="sub">Course design · upper-level undergraduate / graduate</div>
         </a>
+        <SearchBox />
         <nav className="top-links">
           {TOP_LINKS.map((l) => (
             <a key={l.href} href={l.href} className={route.page === l.page ? "on" : ""}>
@@ -98,6 +137,7 @@ export default function App() {
           {route.page === "projects" && <ProjectsPage />}
           {route.page === "tools" && <ToolsPage />}
           {route.page === "resources" && <ResourcesPage />}
+          {route.page === "search" && <SearchPage query={route.query} />}
           {route.page === "module" && <ModulePage mod={MODULE_BY_ID[route.id]} />}
         </main>
       </div>

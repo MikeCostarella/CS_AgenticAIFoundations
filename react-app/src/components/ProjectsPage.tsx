@@ -1,4 +1,5 @@
-import { PROJECT_REQUIREMENTS, PROJECTS } from "../data/projects";
+import RichText from "./RichText";
+import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS } from "../data/projects";
 
 export default function ProjectsPage() {
   return (
@@ -9,7 +10,7 @@ export default function ProjectsPage() {
         to build with agentic AI. Teams pick one, adapt one, or propose their own.
       </p>
 
-      <section>
+      <section id="requirements">
         <h2>Every final project must include</h2>
         <ul className="topics">
           {PROJECT_REQUIREMENTS.map((r) => (
@@ -18,7 +19,7 @@ export default function ProjectsPage() {
         </ul>
       </section>
 
-      <section>
+      <section id="examples">
         <h2>Example projects</h2>
         <div className="card-grid">
           {PROJECTS.map((p) => (
@@ -36,22 +37,25 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section>
-        <h2>Midterm project (week 8)</h2>
-        <p>
-          A single agent with tool calling, retrieval, and at least one MCP or enterprise
-          integration, demonstrated with traces and described in a short design document. Most
-          teams grow their midterm agent into their final project.
-        </p>
-      </section>
-
-      <section>
-        <h2>Industry partners</h2>
-        <p>
-          Employer and community partners are welcome to suggest project problems, provide
-          realistic (non-sensitive) data, give guest lectures, or join final demos as reviewers.
-        </p>
-      </section>
+      {PROJECT_NOTES.map((s) => (
+        <section key={s.id} id={s.id}>
+          <h2>{s.heading}</h2>
+          {s.paras?.map((p, i) => (
+            <p key={i}>
+              <RichText text={p} />
+            </p>
+          ))}
+          {s.items && (
+            <ul className="topics">
+              {s.items.map((it, i) => (
+                <li key={i}>
+                  <RichText text={it} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
     </article>
   );
 }

@@ -3,7 +3,7 @@ import { LAB_COUNT, MODULE_COUNT, UNIT_COUNT, UNITS } from "../data/modules";
 
 export default function HomePage() {
   return (
-    <article className="home">
+    <article className="home" id="top">
       <p className="draft-banner">
         <b>Draft.</b> {COURSE.status}
       </p>
@@ -23,7 +23,7 @@ export default function HomePage() {
         <span><b>2</b> checkpoints: midterm &amp; final</span>
       </div>
 
-      <section>
+      <section id="thesis">
         <h2>Course thesis</h2>
         <p>{COURSE.thesis}</p>
         <div className="agent-loop" aria-label="The agent loop">
@@ -34,7 +34,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section>
+      <section id="outcomes">
         <h2>What you will be able to do</h2>
         <ol className="outcomes">
           {COURSE.outcomes.map((o, i) => (
@@ -43,13 +43,13 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <section>
+      <section id="format">
         <h2>Format</h2>
         <p>{COURSE.format}</p>
         <p>{COURSE.levels}.</p>
       </section>
 
-      <section>
+      <section id="units">
         <h2>The five units</h2>
         <div className="unit-cards">
           {UNITS.map((u) => (
@@ -67,7 +67,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section>
+      <section id="grading">
         <h2>Grading</h2>
         <table className="grading">
           <tbody>
@@ -82,7 +82,7 @@ export default function HomePage() {
         <p>{COURSE.gradGrading}</p>
       </section>
 
-      <section>
+      <section id="integrity">
         <h2>AI use and academic integrity</h2>
         <p>{COURSE.integrity}</p>
       </section>

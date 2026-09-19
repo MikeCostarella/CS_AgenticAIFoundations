@@ -9,7 +9,7 @@ export default function SyllabusPage() {
         readings, and lab; labs build on one another toward the midterm and final projects.
       </p>
 
-      <section className="syll-unit">
+      <section className="syll-unit" id="weekly-schedule">
         <h2>Weekly schedule</h2>
         <table className="schedule-table">
           <thead>
@@ -36,7 +36,7 @@ export default function SyllabusPage() {
       </section>
 
       {UNITS.map((u) => (
-        <section key={u.number} className="syll-unit">
+        <section key={u.number} className="syll-unit" id={`unit-${u.number}`}>
           <h2>
             <span className="unit-no">Unit {u.number}</span> {u.title}
           </h2>

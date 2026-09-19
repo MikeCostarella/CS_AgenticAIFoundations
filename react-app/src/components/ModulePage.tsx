@@ -20,13 +20,13 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
       </h1>
       <p className="mod-subtitle">{mod.subtitle}</p>
 
-      <section>
+      <section id="overview">
         {mod.overview.map((p, i) => (
           <p key={i}>{p}</p>
         ))}
       </section>
 
-      <section>
+      <section id="topics">
         <h2>Lecture topics</h2>
         <ul className="topics">
           {mod.topics.map((t, i) => (
@@ -36,7 +36,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
       </section>
 
       {mod.resources && mod.resources.length > 0 && (
-        <section>
+        <section id="readings">
           <h2>Readings and references</h2>
           <ul className="readings">
             {mod.resources.map((id) => {
@@ -70,7 +70,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
       )}
 
       {mod.checkpoint && (
-        <section className="checkpoint">
+        <section className="checkpoint" id="checkpoint">
           <h2>Graded checkpoint</h2>
           <p>{mod.checkpoint}</p>
           {mod.id === "m13" && (
@@ -82,7 +82,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
       )}
 
       {mod.gradNote && (
-        <section className="grad-note">
+        <section className="grad-note" id="grad-note">
           <h2>Graduate section</h2>
           <p>{mod.gradNote}</p>
         </section>

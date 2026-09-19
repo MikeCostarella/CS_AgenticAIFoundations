@@ -355,3 +355,142 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
 .agent-loop { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0; }
 .agent-loop span.step { background: var(--brand); color: var(--brand-ink); border-radius: 999px; padding: 4px 14px; font-size: 0.88rem; font-weight: 600; }
 .agent-loop span.arrow { color: var(--text-muted); }
+
+/* =========================================================== site search ==
+   Masthead search box with an instant-results dropdown, the shared result
+   row used by both the dropdown and #/search, and the full results page. */
+
+.search-box { position: relative; flex: 0 1 300px; min-width: 150px; display: flex; align-items: center; }
+.sb-icon {
+  position: absolute; left: 10px; font-size: 1rem; line-height: 1;
+  color: var(--brand-ink); opacity: 0.6; pointer-events: none;
+}
+.sb-input {
+  width: 100%; font: inherit; font-size: 0.86rem;
+  padding: 7px 32px 7px 30px;
+  color: var(--brand-ink); background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px;
+  outline: none; transition: background 0.15s, border-color 0.15s;
+  -webkit-appearance: none; appearance: none;
+}
+.sb-input::placeholder { color: var(--brand-ink); opacity: 0.55; }
+.sb-input:hover { background: rgba(255, 255, 255, 0.18); }
+.sb-input:focus {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.28);
+}
+.sb-input::-webkit-search-cancel-button { filter: invert(1); opacity: 0.5; }
+.sb-kbd {
+  position: absolute; right: 9px; pointer-events: none;
+  font-family: inherit; font-size: 0.7rem; line-height: 1;
+  color: var(--brand-ink); opacity: 0.5;
+  border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 4px; padding: 2px 5px;
+}
+
+.sb-panel {
+  position: absolute; top: calc(100% + 9px); right: 0;
+  width: min(460px, 88vw); max-height: 70vh; overflow-y: auto;
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgba(24, 18, 48, 0.25);
+  z-index: 120;
+}
+.sb-empty { padding: 16px 14px; font-size: 0.85rem; color: var(--text-muted); }
+.sb-all {
+  display: block; width: 100%; text-align: left;
+  background: var(--soft); border: none; border-top: 1px solid var(--border);
+  font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--accent-dark);
+  padding: 10px 14px; cursor: pointer;
+}
+.sb-all:hover, .sb-all.on { background: var(--tint); }
+
+/* ---- shared result row ---- */
+.sr-item {
+  display: block; padding: 10px 14px; text-decoration: none; color: inherit;
+  border-bottom: 1px solid var(--border);
+}
+.sr-item:last-of-type { border-bottom: none; }
+.sr-item:hover, .sr-item.on { background: var(--hover); }
+.sr-item.on { box-shadow: inset 3px 0 0 var(--accent); }
+.sr-top { display: flex; align-items: baseline; gap: 8px; }
+.sr-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.sr-ext { color: var(--text-muted); font-weight: 400; }
+.sr-kind {
+  flex: none; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 999px;
+  background: var(--chip); color: var(--ink-2); white-space: nowrap;
+}
+.sr-kind.k-module { background: var(--tint); color: var(--accent-dark); }
+.sr-kind.k-lab { background: var(--lab-bg); color: var(--lab); }
+.sr-kind.k-checkpoint { background: var(--cp-bg); color: var(--cp); }
+.sr-kicker { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+.sr-snippet { font-size: 0.8rem; color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
+.sr-snippet mark { background: #fdf0a8; color: inherit; border-radius: 3px; padding: 0 1px; }
+
+/* ---- full results page ---- */
+.search-page .sp-form { display: flex; gap: 8px; margin: 0 0 18px; }
+.sp-input {
+  flex: 1; font: inherit; font-size: 0.95rem; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--card); color: var(--ink); outline: none;
+}
+.sp-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.18); }
+.sp-go {
+  font: inherit; font-size: 0.9rem; font-weight: 600; padding: 10px 18px;
+  border: none; border-radius: var(--radius); cursor: pointer;
+  background: var(--accent); color: #fff;
+}
+.sp-go:hover { background: var(--accent-dark); }
+.sp-intro .sp-try { font-size: 0.88rem; color: var(--text-muted); }
+.sp-filters { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+.sp-chip {
+  font: inherit; font-size: 0.8rem; padding: 5px 12px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--card); color: var(--ink-2);
+}
+.sp-chip:hover { background: var(--hover); }
+.sp-chip.on { background: var(--tint); border-color: var(--tint-border); color: var(--accent-dark); font-weight: 600; }
+.sp-n { font-variant-numeric: tabular-nums; opacity: 0.7; margin-left: 3px; }
+.sp-group { margin-bottom: 26px; }
+.sp-group h2 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px; }
+.sp-list {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.sp-list .sr-item { padding: 12px 16px; }
+
+/* A section arrived at from a search result glows briefly so the reader
+   can see which part of a long page the match was in. */
+.section-flash { animation: section-flash 1.6s ease-out; }
+@keyframes section-flash {
+  0%, 35% { background: var(--tint); box-shadow: 0 0 0 8px var(--tint); border-radius: 4px; }
+  100% { background: transparent; box-shadow: 0 0 0 8px transparent; border-radius: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-flash { animation: none; }
+}
+
+/* Below ~1100px the bar can no longer hold brand, search, and nav on one
+   line without squeezing the brand, so search drops to its own full-width
+   row underneath. */
+@media (max-width: 1100px) {
+  .masthead { flex-wrap: wrap; }
+  .search-box { order: 9; flex: 1 0 100%; }
+  .sb-panel { width: 100%; left: 0; right: auto; }
+}
+
+@media (max-width: 860px) {
+  .search-page .sp-form { flex-wrap: wrap; }
+  .sp-go { flex: 1; }
+}
+
+/* The masthead is sticky, so a section jumped to from a search result needs
+   headroom or its heading hides underneath the bar. */
+.content section[id], .content article[id], .content div[id] { scroll-margin-top: 78px; }
+
+@media (max-width: 1400px) and (min-width: 1101px) {
+  /* Laptop widths: give search less of the bar so the brand subtitle still
+     fits on one line and the masthead keeps its height. */
+  .search-box { flex: 0 1 200px; }
+  .sb-kbd { display: none; }
+}
