@@ -27,16 +27,28 @@ const STOP_WORDS = new Set([
   "in", "is", "it", "of", "on", "or", "that", "the", "to", "what", "with",
 ]);
 
-/** Kinds nudged up or down so the most useful result tends to lead. */
-const KIND_BOOST: Record<SearchDoc["kind"], number> = {
+/**
+ * Kinds nudged up or down so the most useful result tends to lead.
+ *
+ * Deliberately a loose string map rather than a map over this site's kinds:
+ * this file is identical in every course repo, and each one indexes a
+ * slightly different set (slides here, projects there). A kind with no entry
+ * simply gets no nudge.
+ */
+const KIND_BOOST: Record<string, number> = {
   module: 1.18,
   lab: 1.06,
+  slide: 1.04,
   checkpoint: 1.0,
   unit: 1.0,
   page: 1.0,
   project: 1.0,
+  setup: 1.0,
+  excerpt: 0.98,
   resource: 0.94,
+  reading: 0.94,
   tool: 0.94,
+  podcast: 0.9,
 };
 
 export function normalize(text: string): string {
@@ -188,7 +200,7 @@ export function search(query: string, limit = 50): SearchHit[] {
     if (terms.length > 1 && p.haystack.includes(phrase)) score *= 1.6;
     if (p.normalizedTitle.includes(phrase)) score *= 1.5;
     if (p.normalizedTitle === phrase) score *= 1.3;
-    score *= KIND_BOOST[p.doc.kind];
+    score *= KIND_BOOST[p.doc.kind] ?? 1;
 
     hits.push({ doc: p.doc, score, snippet: buildSnippet(p.doc, terms) });
   }
