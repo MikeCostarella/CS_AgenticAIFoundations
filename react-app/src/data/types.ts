@@ -8,9 +8,30 @@ export interface Link {
   note?: string;
 }
 
+export interface LabScriptStep {
+  /** What to do — one imperative action. */
+  do: string;
+  /** Where it happens, e.g. "PowerShell", "VS Code terminal", "console.anthropic.com". */
+  where?: string;
+  /** Exact commands or code to type, shown in a code block. May be multiline. */
+  commands?: string;
+  /** What success looks like on screen. */
+  expect?: string;
+  /** The point being made — why this step is in the lab at all. */
+  point?: string;
+}
+
+export interface LabTask {
+  /** The task as listed on the module page. */
+  text: string;
+  /** Optional live script: a step-by-step walkthrough rendered as an expander. */
+  script?: LabScriptStep[];
+}
+
 export interface Lab {
   title: string;
-  tasks: string[];
+  /** Plain strings, or objects when the task carries a step-by-step script. */
+  tasks: (string | LabTask)[];
   deliverable: string;
 }
 

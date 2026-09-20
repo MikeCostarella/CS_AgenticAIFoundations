@@ -59,9 +59,44 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
         <section className="lab" id="lab">
           <h2>{mod.lab.title}</h2>
           <ol>
-            {mod.lab.tasks.map((t, i) => (
-              <li key={i}>{t}</li>
-            ))}
+            {mod.lab.tasks.map((t, i) => {
+              const task = typeof t === "string" ? { text: t, script: undefined } : t;
+              return (
+                <li key={i}>
+                  {task.text}
+                  {task.script && (
+                    <details className="lab-script">
+                      <summary>Step by step — follow along ({task.script.length} steps)</summary>
+                      <ol className="script-steps">
+                        {task.script.map((s, j) => (
+                          <li key={j}>
+                            <p className="step-do">
+                              {s.do}
+                              {s.where && <span className="step-where">{s.where}</span>}
+                            </p>
+                            {s.commands && (
+                              <pre className="step-cmd">
+                                <code>{s.commands}</code>
+                              </pre>
+                            )}
+                            {s.expect && (
+                              <p className="step-expect">
+                                <b>You should see:</b> {s.expect}
+                              </p>
+                            )}
+                            {s.point && (
+                              <p className="step-point">
+                                <b>The point:</b> {s.point}
+                              </p>
+                            )}
+                          </li>
+                        ))}
+                      </ol>
+                    </details>
+                  )}
+                </li>
+              );
+            })}
           </ol>
           <p className="lab-deliverable">
             <b>Deliverable:</b> {mod.lab.deliverable}

@@ -272,6 +272,11 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
   display: grid;
   gap: 1rem;
 }
+.script-steps > li {
+  /* Grid items default to min-width:auto, which lets a wide code block push
+     the page sideways instead of scrolling inside .step-cmd. */
+  min-width: 0;
+}
 .script-steps > li::marker {
   font-weight: 700;
   color: var(--lab);
@@ -293,6 +298,12 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
   padding: 0.12rem 0.6rem;
   vertical-align: middle;
   white-space: nowrap;
+}
+@media (max-width: 560px) {
+  /* A long location label should wrap rather than widen the page. */
+  .step-where {
+    white-space: normal;
+  }
 }
 .step-cmd {
   margin: 0.4rem 0;

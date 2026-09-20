@@ -10,7 +10,7 @@ import { MODULES, UNITS } from "./modules";
 import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS } from "./projects";
 import { RESOURCES, resolveRefs } from "./resources";
 import { TOOLS, TOOLS_LEDE, TOOLS_SECTIONS } from "./tools";
-import type { PageSection } from "./types";
+import type { LabTask, PageSection } from "./types";
 
 export type SearchKind =
   | "module"
@@ -65,6 +65,14 @@ export const KIND_ORDER: SearchKind[] = [
   "resource",
 ];
 
+function taskText(t: string | LabTask): string {
+  if (typeof t === "string") return t;
+  const steps = (t.script ?? []).map((s) =>
+    [s.do, s.where, s.commands, s.expect, s.point].filter(Boolean).join(" "),
+  );
+  return [t.text, ...steps].join(" ");
+}
+
 function sectionText(s: PageSection): string {
   return resolveRefs([...(s.paras ?? []), ...(s.items ?? [])].join(" "));
 }
@@ -95,8 +103,8 @@ function build(): SearchDoc[] {
         title: m.lab.title,
         subtitle: `Module ${m.number} — ${m.title}`,
         kicker: `Lab · Week ${m.weeks}`,
-        keywords: m.lab.tasks,
-        body: [...m.lab.tasks, `Deliverable: ${m.lab.deliverable}`].join(" "),
+        keywords: m.lab.tasks.map(taskText),
+        body: [...m.lab.tasks.map(taskText), `Deliverable: ${m.lab.deliverable}`].join(" "),
         href: `#/m/${m.id}?s=lab`,
       });
     }
