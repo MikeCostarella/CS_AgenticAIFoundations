@@ -14,6 +14,18 @@ export default function HomePage() {
       <p className="contact">
         <b>Prerequisites:</b> {COURSE.prerequisites}
       </p>
+      <p className="contact">
+        <b>Course path:</b>{" "}
+        {COURSE.coursePath.map((c) => (
+          <span key={c.url}>
+            <a href={c.url} target="_blank" rel="noreferrer">
+              {c.title}
+            </a>{" "}
+            →{" "}
+          </span>
+        ))}
+        {COURSE.heading}
+      </p>
 
       <div className="stat-row">
         <span><b>15</b> weeks</span>

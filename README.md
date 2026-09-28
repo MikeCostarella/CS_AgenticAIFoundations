@@ -10,6 +10,15 @@ Status: **draft course design for discussion**, not an official catalog listing.
 
 Created by Mike Costarella, Costarella Innovations, LLC.
 
+## Course path
+
+```
+Python Programming  ->  Introduction to AI/ML  ->  LLM Foundations  ->  Agentic AI Foundations
+```
+
+Introduction to AI/ML and LLM Foundations are self-directed courses that give
+the recommended background. Neither is required.
+
 ## Course structure
 
 - **Unit I — LLMs as Software Components** (Modules 1–2, weeks 1–2)
@@ -46,5 +55,5 @@ https://mikecostarella.github.io/CS_AgenticAIFoundations/
 ## Fleet conventions
 
 Hamburger accordion main menu (View / Units / Links), build timestamp in the
-masthead, menu foot, and footer, and the "© Costarella Innovations, LLC"
-footer. Base path in `vite.config.ts` must equal `/CS_AgenticAIFoundations/`.
+masthead, menu foot, and footer. The footer carries no copyright line and no
+stack line. Base path in `vite.config.ts` must equal `/CS_AgenticAIFoundations/`.

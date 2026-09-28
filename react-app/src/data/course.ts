@@ -11,7 +11,13 @@ export const COURSE = {
   status:
     "Draft course design for discussion. Not an official catalog listing — titles, numbering, schedule, and weights are proposals.",
   prerequisites:
-    "Data Structures, plus a Python or web programming course. An introductory AI/ML course is recommended but not required.",
+    "Data Structures, plus a Python or web programming course. Introduction to AI/ML and LLM Foundations are recommended background but not required.",
+  /** The self-directed courses that lead here, in order. */
+  coursePath: [
+    { title: "Python Programming", url: "https://mikecostarella.github.io/CS_PythonProgrammingCourse/" },
+    { title: "Introduction to AI/ML", url: "https://mikecostarella.github.io/CS_IntroductionToAIML/" },
+    { title: "LLM Foundations", url: "https://mikecostarella.github.io/CS_LLMFoundations/" },
+  ],
   levels: "Cross-listed at the 4xxx (undergraduate) and 6xxx (graduate) level",
   schedule: "15 weeks · roughly half lecture, half lab · team final project",
   author: "Mike Costarella",

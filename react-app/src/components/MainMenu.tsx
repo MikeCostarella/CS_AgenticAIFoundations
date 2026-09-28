@@ -7,6 +7,8 @@ import BuildStamp from "./BuildStamp";
 // navigation plus external links, build stamp at the foot.
 
 const EXTERNAL = [
+  { label: "Before: LLM Foundations", href: "https://mikecostarella.github.io/CS_LLMFoundations/" },
+  { label: "Before that: Introduction to AI/ML", href: "https://mikecostarella.github.io/CS_IntroductionToAIML/" },
   { label: "Mike Costarella — Courses", href: "https://mikecostarella.github.io/MikeCostarellaCourses/" },
   { label: "My Web Site", href: "https://mikecostarella.github.io/MyWebSite/" },
   { label: "GitHub repository", href: `https://github.com/MikeCostarella/${COURSE.repo}` },

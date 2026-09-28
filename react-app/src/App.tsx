@@ -144,7 +144,7 @@ export default function App() {
 
       <footer className="footer">
         <span>
-          © Costarella Innovations, LLC · Course design by {COURSE.author} ·{" "}
+          Course design by {COURSE.author} ·{" "}
           <a className="contact-link" href={`mailto:${COURSE.contactEmail}`}>
             {COURSE.contactEmail}
           </a>
