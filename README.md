@@ -56,4 +56,10 @@ https://mikecostarella.github.io/CS_AgenticAIFoundations/
 
 Hamburger accordion main menu (View / Units / Links), build timestamp in the
 masthead, menu foot, and footer. The footer carries no copyright line and no
-stack line. Base path in `vite.config.ts` must equal `/CS_AgenticAIFoundations/`.
+stack line — only the author credit and the license line. Base path in `vite.config.ts` must equal `/CS_AgenticAIFoundations/`.
+
+## License
+
+Course content: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+Code, including lab code samples: MIT. See [LICENSE.md](LICENSE.md) for details
+and the attribution line to use when adapting the course.
