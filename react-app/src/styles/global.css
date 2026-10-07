@@ -336,6 +336,30 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
   font-size: 0.84rem;
   line-height: 1.55;
 }
+.step-cmd-wrap {
+  position: relative;
+}
+.step-cmd-wrap .step-cmd {
+  /* Leave room so the Copy button never covers the first line. */
+  padding-right: 5.5rem;
+}
+.copy-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--code-ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  padding: 0.18rem 0.6rem;
+  cursor: pointer;
+}
+.copy-btn:hover { background: rgba(255, 255, 255, 0.16); }
+.copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.copy-btn.is-copied { color: #9ecf8a; border-color: rgba(158, 207, 138, 0.6); }
 .step-expect,
 .step-point {
   margin: 0.35rem 0 0;
@@ -525,4 +549,10 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
      fits on one line and the masthead keeps its height. */
   .search-box { flex: 0 1 200px; }
   .sb-kbd { display: none; }
+}
+
+/* Visually hidden but announced by screen readers. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }

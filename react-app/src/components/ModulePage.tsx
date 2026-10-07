@@ -1,6 +1,7 @@
 import type { ModuleDef } from "../data/types";
 import { prevNext, unitOf } from "../data/modules";
 import { RESOURCE_BY_ID } from "../data/resources";
+import CopyCode from "./CopyCode";
 
 export default function ModulePage({ mod }: { mod: ModuleDef }) {
   const unit = unitOf(mod);
@@ -74,11 +75,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
                               {s.do}
                               {s.where && <span className="step-where">{s.where}</span>}
                             </p>
-                            {s.commands && (
-                              <pre className="step-cmd">
-                                <code>{s.commands}</code>
-                              </pre>
-                            )}
+                            {s.commands && <CopyCode text={s.commands} />}
                             {s.expect && (
                               <p className="step-expect">
                                 <b>You should see:</b> {s.expect}
