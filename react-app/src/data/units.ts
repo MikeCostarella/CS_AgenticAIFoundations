@@ -42,8 +42,8 @@ export const UNIT_DEFS: UnitDef[] = [
                 {
                   do: "Make one course folder for every lab in this course, and start in it.",
                   where: "PowerShell",
-                  commands: "mkdir $HOME\\agentic-ai\ncd $HOME\\agentic-ai\n(Get-Location).Path",
-                  expect: "The prompt now ends in \\agentic-ai, and the last line printed is the folder's full path, such as C:\\Users\\Mike\\agentic-ai. Copy that line into the \"Your course folder\" box at the top of this lab — from then on, the VS Code labels in every lab open the right folder.",
+                  commands: "mkdir $HOME\\agentic-ai -Force\ncd $HOME\\agentic-ai\n(Get-Location).Path",
+                  expect: "The prompt now ends in \\agentic-ai, and the last line printed is the folder's full path, such as C:\\Users\\Mike\\agentic-ai. Copy that line into the \"Your course folder\" box at the top of this lab — from then on, the VS Code labels in every lab open the right folder. Running this step again later is safe: -Force accepts a folder that already exists, so it simply prints the path again.",
                   point: "Every lab folder in this course lives side by side in here, and so does your AI-assistance log. Later labs copy files with paths like ..\\agentic-lab01\\.gitignore, which only work when the labs are siblings — so every lab starts with cd $HOME\\agentic-ai, wherever PowerShell happened to open.",
                 },
                 {
@@ -76,7 +76,8 @@ export const UNIT_DEFS: UnitDef[] = [
                 },
                 {
                   do: "Create an API key under API keys.",
-                  where: "console.anthropic.com",
+                  where: "Claude Console",
+                  whereUrl: "https://platform.claude.com/settings/keys",
                   expect: "The key is displayed exactly once. Copy it now; you cannot read it again, only replace it.",
                   point: "Console-issued keys bill to your account. Treat the clipboard contents as a password, because that is what it is.",
                 },
@@ -102,6 +103,7 @@ export const UNIT_DEFS: UnitDef[] = [
                 {
                   do: "Look up a current model identifier and write it down.",
                   where: "Anthropic docs",
+                  whereUrl: "https://platform.claude.com/docs/en/models/overview",
                   expect: "A dated identifier — a model family name followed by a release date.",
                   point: "Model IDs are retired and replaced every few months, so this course does not hard-code one. If you are working against OpenAI instead, everything in this lab transfers — a client object, a create call, a usage object on the response, and a per-million-token price list; only the names differ, so check their SDK docs for the current ones.",
                 },
@@ -122,6 +124,7 @@ export const UNIT_DEFS: UnitDef[] = [
                 {
                   do: "Look up the current prices for your model, then replace the two zero placeholders in ask.py.",
                   where: "Pricing page",
+                  whereUrl: "https://platform.claude.com/docs/en/about-claude/pricing",
                   expect: "Two different numbers. Output tokens cost several times more than input tokens.",
                   point: "Until both numbers are real, the cost line is decoration. The input/output asymmetry is the single most useful fact for budgeting an agent that reads a lot and writes a little.",
                 },

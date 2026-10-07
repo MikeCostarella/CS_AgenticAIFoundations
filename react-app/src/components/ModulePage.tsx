@@ -12,6 +12,19 @@ const isVsCode = (where?: string) => !!where && /VS Code/i.test(where);
 /** The location chip on a lab step: a link into VS Code once the folder exists and is known. */
 function StepWhere({ step, href, target }: { step: LabScriptStep; href: string | null; target: string | null }) {
   if (!step.where) return null;
+  if (step.whereUrl) {
+    return (
+      <a
+        className="step-where step-where-link"
+        href={step.whereUrl}
+        target="_blank"
+        rel="noreferrer"
+        title={`Open ${step.whereUrl} in a new tab`}
+      >
+        {step.where} <span aria-hidden="true">↗</span>
+      </a>
+    );
+  }
   if (href && target) {
     return (
       <a className="step-where step-where-link" href={href} title={`Open ${target} in VS Code`}>

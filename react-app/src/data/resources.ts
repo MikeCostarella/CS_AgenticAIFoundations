@@ -23,8 +23,8 @@ export const RESOURCES: Resource[] = [
   { id: "building-effective-agents", group: "Guides", label: "Building Effective Agents (Anthropic)", url: "https://www.anthropic.com/engineering/building-effective-agents", note: "Workflows vs. agents and the core orchestration patterns." },
 
   // Documentation
-  { id: "anthropic-api", group: "Documentation", label: "Claude Developer Platform documentation", url: "https://docs.claude.com", note: "Messages API, structured output, prompt caching." },
-  { id: "anthropic-tools", group: "Documentation", label: "Claude tool use overview", url: "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview", note: "Tool definitions and the tool-use loop." },
+  { id: "anthropic-api", group: "Documentation", label: "Claude Developer Platform documentation", url: "https://platform.claude.com/docs", note: "Messages API, structured output, prompt caching." },
+  { id: "anthropic-tools", group: "Documentation", label: "Claude tool use overview", url: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", note: "Tool definitions and the tool-use loop." },
   { id: "openai-api", group: "Documentation", label: "OpenAI API documentation", url: "https://platform.openai.com/docs", note: "Responses API, structured outputs." },
   { id: "openai-functions", group: "Documentation", label: "OpenAI function calling guide", url: "https://platform.openai.com/docs/guides/function-calling", note: "The same loop from a second vendor." },
   { id: "mcp", group: "Documentation", label: "Model Context Protocol", url: "https://modelcontextprotocol.io", note: "Specification, concepts, and SDKs." },

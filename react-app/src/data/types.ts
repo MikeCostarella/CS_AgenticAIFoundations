@@ -11,8 +11,10 @@ export interface Link {
 export interface LabScriptStep {
   /** What to do — one imperative action. */
   do: string;
-  /** Where it happens, e.g. "PowerShell", "VS Code terminal", "console.anthropic.com". */
+  /** Where it happens, e.g. "PowerShell", "VS Code", "Claude Console". */
   where?: string;
+  /** When the place is a web page, its address: the location chip becomes a link that opens it in a new tab. */
+  whereUrl?: string;
   /** Exact commands or code to type, shown in a code block. May be multiline. */
   commands?: string;
   /** What success looks like on screen. */
