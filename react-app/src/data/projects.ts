@@ -24,6 +24,18 @@ export const PROJECTS: ProjectIdea[] = [
     ],
   },
   {
+    title: "Cross-system reconciliation agent",
+    track: "IT",
+    summary:
+      "Gathers the same records from several systems that should agree — for example an asset inventory, a ticketing system, and a staff directory — matches them, reports what agrees, and sends every conflict to a human-review queue instead of guessing.",
+    requirements: [
+      "Read tools for at least two systems, through APIs or an MCP server, each with its own least-privilege credential",
+      "Written matching and escalation rules, enforced in code; the agent fixes nothing without approval",
+      "A review queue and audit log a person can work through",
+      "Eval set of seeded discrepancies: measure what was caught, what was missed, and what was escalated needlessly",
+    ],
+  },
+  {
     title: "Data pipeline agent",
     track: "CS / IT",
     summary:
@@ -84,6 +96,7 @@ export const PROJECTS: ProjectIdea[] = [
 
 export const PROJECT_REQUIREMENTS = [
   "A working agentic system with tool calling and at least one real integration (API, database, or MCP server)",
+  "A one-paragraph justification that the problem needs an agent rather than plain code, workflow automation, or a single model call",
   "An evaluation harness with a documented eval set and reported metrics",
   "A security review, including prompt-injection testing and a permissions inventory",
   "A responsible-use statement: intended users, limits, privacy, and human oversight",

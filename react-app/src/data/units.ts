@@ -20,9 +20,11 @@ export const UNIT_DEFS: UnitDef[] = [
         overview: [
           "Agentic systems are built on large language models, so the course starts by treating a model the way an engineer treats any dependency: what goes in, what comes out, what it costs, how fast it is, and how it fails. The goal is not the mathematics of transformers but a working mental model accurate enough to make design decisions.",
           "Students set up their API access, development environment, and course repository, and make their first programmatic model calls. From day one, every call is logged with its token counts, latency, and cost so that the economics of agents are visible rather than abstract.",
+          "The module also sets up a question the rest of the course keeps asking: does this problem need a model at all? Some work is best done with ordinary code, rules, or workflow automation; some needs a model only to interpret or classify something; and only some warrants an agent that uses tools across several steps. Each step up the ladder buys flexibility at the price of cost, latency, and testability, so the choice is an engineering decision, not a default.",
         ],
         topics: [
           "What an LLM is (and is not) from a software engineer's point of view",
+          "Automation vs. AI vs. agentic AI: the decision ladder — plain code and rules, workflow automation, a single model call, an agent",
           "Tokens, context windows, and why long inputs cost more and degrade",
           "Sampling: temperature, top-p, determinism, and reproducibility",
           "Chat APIs: system prompts, message roles, multi-turn state",
@@ -200,6 +202,7 @@ export const UNIT_DEFS: UnitDef[] = [
         ],
         topics: [
           "Structured output modes and JSON Schema",
+          "The second rung of the ladder: a single model call that interprets text, with ordinary code around it",
           "Validation libraries (Pydantic, Zod) and repair/retry strategies",
           "Prompt design as an interface contract: role, task, constraints, examples, output format",
           "Few-shot examples and when they help",
@@ -397,6 +400,7 @@ export const UNIT_DEFS: UnitDef[] = [
         ],
         topics: [
           "Workflows vs. agents: when a fixed pipeline is better than autonomy",
+          "Climbing the ladder on purpose: the same task as plain code, a single model call, and an agent, compared on cost, latency, reliability, and testability",
           "Tool definitions: names, descriptions, and JSON parameter schemas",
           "The agent loop: reason, act, observe, repeat",
           "Parallel tool calls and tool results as context",
@@ -574,8 +578,9 @@ export const UNIT_DEFS: UnitDef[] = [
                 },
               ],
             },
+            "Pick one of your three tasks and solve it twice more: once as plain code with no model (a fixed query or script) and once as a single model call with no tools. In LADDER.md, compare the three rungs — lines of code, cost per run, latency, success over 5 runs, and how you would test each — and say which one you would ship and why.",
           ],
-          deliverable: "Code, trace files for three tasks, and a short write-up of one failure you observed.",
+          deliverable: "Code, trace files for three tasks, a short write-up of one failure you observed, and LADDER.md.",
         },
       },
       {
@@ -1036,6 +1041,7 @@ export const UNIT_DEFS: UnitDef[] = [
         subtitle: "APIs, databases, identity, and the midterm checkpoint",
         overview: [
           "Enterprise agents operate inside ticketing systems, databases, document stores, and identity systems. This module covers the practical concerns — authentication, permissions, rate limits, auditing — and closes with the midterm project checkpoint in week 8.",
+          "Much enterprise work is not a chat at all: the same facts live in several systems that disagree. An agent can gather records from each source, match them, report what agrees, and route what does not to a person — provided the rules for what it may resolve on its own, and what it must escalate, are written down and enforced in code.",
         ],
         topics: [
           "REST and GraphQL APIs as agent tools; OpenAPI-to-tool generation",
@@ -1043,6 +1049,8 @@ export const UNIT_DEFS: UnitDef[] = [
           "Service accounts, OAuth, and least privilege",
           "Audit logs and traceability",
           "Rate limits, pagination, and large results",
+          "Reconciling records across systems: matching keys, conflicts, and which system is the source of truth for each field",
+          "Escalation rules: when the agent must hand a case to a person, and a review queue it cannot bypass",
         ],
         resources: ["owasp-llm", "mcp"],
         lab: {
@@ -1156,6 +1164,7 @@ export const UNIT_DEFS: UnitDef[] = [
                 },
               ],
             },
+            "Optional midterm extension — reconciliation: add a second source that overlaps the help desk, such as an asset-inventory CSV of 15–20 devices that you build from the ticket data with a few deliberate disagreements (wrong owner, retired device still in use, missing record). Give the agent a read tool for it, have it reconcile the two sources, and send every conflict to a human-review queue under escalation rules you write in MIDTERM-NOTES.md. The agent changes nothing in either system on its own.",
           ],
           deliverable: "Folded into the midterm project.",
         },
@@ -1206,16 +1215,19 @@ export const UNIT_DEFS: UnitDef[] = [
         number: 9,
         unit: 4,
         weeks: "10",
-        title: "Agent frameworks and SDKs",
-        subtitle: "What frameworks give you, what they hide, and how to choose",
+        title: "Frameworks, SDKs, and platforms",
+        subtitle: "Build, extend, or buy — what each gives you, what it hides, and how to choose",
         overview: [
           "Having built agents by hand, students now port one to a framework and judge the trade-offs: less boilerplate and built-in features versus abstraction, lock-in, and debugging difficulty.",
+          "Most organizations also face a third option: the agent platforms their existing vendors are adding to service-desk, CRM, office, and data products. The products will keep changing, but every one of them is assembled from the parts this course has built — a model, tools and connectors, orchestration, data and context, permissions, human approval, logging, and evaluation. Students learn to look behind the product, find those parts, and decide whether to build, extend what they already have, or buy.",
         ],
         topics: [
           "Graph-based orchestration (LangGraph)",
           "Vendor agent SDKs (OpenAI Agents SDK, Claude Agent SDK)",
           "State, checkpoints, and resumability",
           "Guardrails and tracing built into frameworks",
+          "Vendor agent platforms built into enterprise products: what is under the hood, and what you can see and control",
+          "Build vs. extend vs. buy: identity and permission integration, audit and log access, whether you can run your own evals, where data lives, lock-in, pricing model, and what the organization already owns",
           "Selection criteria: team skills, hosting, observability, portability",
         ],
         resources: ["langgraph", "openai-agents-sdk", "claude-agent-sdk"],
@@ -1224,9 +1236,13 @@ export const UNIT_DEFS: UnitDef[] = [
           tasks: [
             "Re-implement your Lab 8 pipeline in one framework or SDK.",
             "Write a one-page comparison: lines of code, debuggability, features gained, and anything lost.",
+            "Platform map: pick one vendor agent platform and, from its public documentation, map it to the course's components — model, tools and connectors, orchestration, data and context, permissions, human approval, logging, and evaluation. For each, note what you can see and control and what is hidden.",
+            "Extend the memo into a build / extend / buy recommendation for your Lab 8 pipeline in a named setting (for example, a university IT department), using the criteria from this module.",
           ],
-          deliverable: "Framework version plus the comparison memo.",
+          deliverable: "Framework version, the platform map, and the build / extend / buy memo.",
         },
+        gradNote:
+          "Graduate students cite the vendor documentation behind every row of the platform map and add a three-year cost estimate for each option.",
       },
       {
         id: "m10",
@@ -1284,6 +1300,7 @@ export const UNIT_DEFS: UnitDef[] = [
           "Building eval sets from real tasks and failures",
           "Code-based graders vs. LLM-as-judge; judge bias and calibration",
           "Trajectory evaluation: judging the path, not just the answer",
+          "Testing escalation: did the agent hand off the cases it should have, and only those?",
           "Regression testing in CI; tracing and observability tools",
           "Benchmarks and their limits",
         ],

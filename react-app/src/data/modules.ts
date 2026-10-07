@@ -14,6 +14,7 @@ export const MODULE_BY_ID: Record<string, ModuleDef> = Object.fromEntries(
 export const MODULE_COUNT = MODULES.length;
 export const UNIT_COUNT = UNITS.length;
 export const LAB_COUNT = MODULES.filter((m) => m.lab).length;
+export const CHECKPOINT_COUNT = MODULES.filter((m) => m.checkpoint).length;
 
 export function unitOf(m: ModuleDef): UnitDef {
   return UNITS.find((u) => u.number === m.unit)!;

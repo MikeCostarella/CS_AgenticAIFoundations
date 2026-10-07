@@ -1,7 +1,26 @@
+import { useState } from "react";
 import { COURSE } from "../data/course";
-import { LAB_COUNT, MODULE_COUNT, UNIT_COUNT, UNITS } from "../data/modules";
+import {
+  CHECKPOINT_COUNT,
+  LAB_COUNT,
+  MODULE_COUNT,
+  MODULES,
+  UNIT_COUNT,
+  UNITS,
+} from "../data/modules";
+
+type StatPanel = "labs" | "checkpoints" | null;
+
+/** "Midterm project (week 8): a single agent…" → ["Midterm project (week 8)", "a single agent…"] */
+function splitCheckpoint(text: string): [string, string] {
+  const i = text.indexOf(": ");
+  return i === -1 ? [text, ""] : [text.slice(0, i), text.slice(i + 2)];
+}
 
 export default function HomePage() {
+  const [panel, setPanel] = useState<StatPanel>(null);
+  const toggle = (p: Exclude<StatPanel, null>) => setPanel((cur) => (cur === p ? null : p));
+
   return (
     <article className="home" id="top">
       <p className="draft-banner">
@@ -28,12 +47,69 @@ export default function HomePage() {
       </p>
 
       <div className="stat-row">
-        <span><b>15</b> weeks</span>
-        <span><b>{UNIT_COUNT}</b> units</span>
-        <span><b>{MODULE_COUNT}</b> modules</span>
-        <span><b>{LAB_COUNT}</b> hands-on labs</span>
-        <span><b>2</b> checkpoints: midterm &amp; final</span>
+        <a className="stat" href="#/syllabus?s=weekly-schedule" title="Weekly schedule">
+          <b>15</b> weeks
+        </a>
+        <a className="stat" href="#/?s=units" title="The five units">
+          <b>{UNIT_COUNT}</b> units
+        </a>
+        <a className="stat" href="#/syllabus" title="All modules on the syllabus">
+          <b>{MODULE_COUNT}</b> modules
+        </a>
+        <button
+          type="button"
+          className="stat stat-toggle"
+          aria-expanded={panel === "labs"}
+          aria-controls="stat-panel-labs"
+          onClick={() => toggle("labs")}
+        >
+          <b>{LAB_COUNT}</b> hands-on labs <span className="stat-caret" aria-hidden="true">▾</span>
+        </button>
+        <button
+          type="button"
+          className="stat stat-toggle"
+          aria-expanded={panel === "checkpoints"}
+          aria-controls="stat-panel-checkpoints"
+          onClick={() => toggle("checkpoints")}
+        >
+          <b>{CHECKPOINT_COUNT}</b> checkpoints: midterm &amp; final{" "}
+          <span className="stat-caret" aria-hidden="true">▾</span>
+        </button>
       </div>
+
+      {panel === "labs" && (
+        <div className="stat-panel" id="stat-panel-labs" aria-label="All hands-on labs">
+          <ol className="stat-list">
+            {MODULES.filter((m) => m.lab).map((m) => (
+              <li key={m.id}>
+                <a href={`#/m/${m.id}?s=lab`}>{m.lab!.title}</a>
+                <span className="stat-meta">
+                  Module {m.number} · {m.title} · Week {m.weeks}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {panel === "checkpoints" && (
+        <div className="stat-panel" id="stat-panel-checkpoints" aria-label="Graded checkpoints">
+          <ul className="stat-list">
+            {MODULES.filter((m) => m.checkpoint).map((m) => {
+              const [head, body] = splitCheckpoint(m.checkpoint!);
+              return (
+                <li key={m.id}>
+                  <a href={`#/m/${m.id}?s=checkpoint`}>{head}</a>
+                  <span className="stat-meta">
+                    Module {m.number} · Week {m.weeks}
+                  </span>
+                  {body && <span className="stat-desc">{body}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       <section id="thesis">
         <h2>Course thesis</h2>
