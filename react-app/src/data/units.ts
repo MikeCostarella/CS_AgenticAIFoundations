@@ -42,8 +42,8 @@ export const UNIT_DEFS: UnitDef[] = [
                 {
                   do: "Make one course folder for every lab in this course, and start in it.",
                   where: "PowerShell",
-                  commands: "mkdir $HOME\\agentic-ai\ncd $HOME\\agentic-ai",
-                  expect: "The prompt now ends in \\agentic-ai. $HOME is your user folder, so on Windows this is C:\\Users\\<you>\\agentic-ai.",
+                  commands: "mkdir $HOME\\agentic-ai\ncd $HOME\\agentic-ai\n(Get-Location).Path",
+                  expect: "The prompt now ends in \\agentic-ai, and the last line printed is the folder's full path, such as C:\\Users\\Mike\\agentic-ai. Copy that line into the \"Your course folder\" box at the top of this lab — from then on, the VS Code labels in every lab open the right folder.",
                   point: "Every lab folder in this course lives side by side in here, and so does your AI-assistance log. Later labs copy files with paths like ..\\agentic-lab01\\.gitignore, which only work when the labs are siblings — so every lab starts with cd $HOME\\agentic-ai, wherever PowerShell happened to open.",
                 },
                 {

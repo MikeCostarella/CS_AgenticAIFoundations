@@ -2,10 +2,49 @@ import type { ModuleDef } from "../data/types";
 import { prevNext, unitOf } from "../data/modules";
 import { RESOURCE_BY_ID } from "../data/resources";
 import CopyCode from "./CopyCode";
+import CourseFolderBox from "./CourseFolderBox";
+import type { LabScriptStep } from "../data/types";
+import { joinFolder, labFolderName, useCourseFolder, vscodeUrl } from "../lib/courseFolder";
+
+/** Step labels that name VS Code ("VS Code", "VS Code + PowerShell"). */
+const isVsCode = (where?: string) => !!where && /VS Code/i.test(where);
+
+/** The location chip on a lab step: a link into VS Code once the folder exists and is known. */
+function StepWhere({ step, href, target }: { step: LabScriptStep; href: string | null; target: string | null }) {
+  if (!step.where) return null;
+  if (href && target) {
+    return (
+      <a className="step-where step-where-link" href={href} title={`Open ${target} in VS Code`}>
+        {step.where} <span aria-hidden="true">↗</span>
+      </a>
+    );
+  }
+  const psHint = /PowerShell/i.test(step.where) ? "Tip: in VS Code, Ctrl+` opens PowerShell in the open folder" : undefined;
+  return <span className="step-where" title={psHint}>{step.where}</span>;
+}
 
 export default function ModulePage({ mod }: { mod: ModuleDef }) {
   const unit = unitOf(mod);
   const { prev, next } = prevNext(mod);
+  const courseFolder = useCourseFolder();
+
+  // Number every scripted step across the lab's tasks, and find the step that
+  // creates this lab's folder: VS Code links only make sense after it exists.
+  const labDir = labFolderName(mod.number);
+  const scripts = (mod.lab?.tasks ?? []).map((t) => (typeof t === "string" ? undefined : t.script));
+  const allSteps = scripts.flatMap((sc) => sc ?? []);
+  const mkdirAt = allSteps.findIndex((st) => st.commands?.includes(`mkdir ${labDir}`));
+  const showFolderBox = allSteps.some((st) => isVsCode(st.where));
+  const firstIndex = scripts.map((_, i) => scripts.slice(0, i).reduce((n, sc) => n + (sc?.length ?? 0), 0));
+
+  const stepLink = (st: LabScriptStep, globalIndex: number): { href: string | null; target: string | null } => {
+    if (!courseFolder || !isVsCode(st.where) || mkdirAt === -1 || globalIndex <= mkdirAt) {
+      return { href: null, target: null };
+    }
+    const inCourseFolder = /\bin the course folder\b/i.test(st.do);
+    const target = inCourseFolder ? courseFolder : joinFolder(courseFolder, labDir);
+    return { href: vscodeUrl(target), target };
+  };
 
   return (
     <article className="module-page">
@@ -59,6 +98,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
       {mod.lab && (
         <section className="lab" id="lab">
           <h2>{mod.lab.title}</h2>
+          {showFolderBox && <CourseFolderBox isLab1={mod.number === 1} />}
           <ol>
             {mod.lab.tasks.map((t, i) => {
               const task = typeof t === "string" ? { text: t, script: undefined } : t;
@@ -73,7 +113,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
                           <li key={j}>
                             <p className="step-do">
                               {s.do}
-                              {s.where && <span className="step-where">{s.where}</span>}
+                              <StepWhere step={s} {...stepLink(s, firstIndex[i] + j)} />
                             </p>
                             {s.commands && <CopyCode text={s.commands} />}
                             {s.expect && (

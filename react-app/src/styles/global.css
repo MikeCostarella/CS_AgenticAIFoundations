@@ -556,3 +556,52 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
+
+/* "Your course folder" panel at the top of each scripted lab. */
+.course-folder {
+  margin: 0.6rem 0 1rem;
+  background: var(--card);
+  border: 1px solid var(--tint-border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+.course-folder.is-set {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+}
+.cf-label { font-weight: 700; color: var(--ink); font-size: 0.92rem; }
+.cf-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86rem; background: var(--chip); border-radius: 6px; padding: 0.1rem 0.45rem;
+  overflow-wrap: anywhere;
+}
+.cf-actions { display: inline-flex; gap: 0.6rem; }
+.cf-link {
+  font: inherit; font-size: 0.86rem; background: none; border: 0; padding: 0;
+  color: var(--accent-dark); text-decoration: underline; cursor: pointer;
+}
+.cf-hint, .cf-note { margin: 0.35rem 0 0; font-size: 0.86rem; color: var(--ink-2); flex-basis: 100%; }
+.cf-note { color: var(--text-muted); font-size: 0.8rem; }
+.cf-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+.cf-row input {
+  flex: 1 1 260px; min-width: 0; font: inherit; font-size: 0.9rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 6px; background: var(--soft); color: var(--ink);
+}
+.cf-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cf-row input[aria-invalid="true"] { border-color: #b42318; }
+.cf-save {
+  font: inherit; font-size: 0.88rem; font-weight: 600; color: #fff; background: var(--accent-dark);
+  border: 0; border-radius: 6px; padding: 0.42rem 0.9rem; cursor: pointer;
+}
+.cf-save:hover { background: var(--accent); }
+.cf-error { margin: 0.4rem 0 0; color: #b42318; font-size: 0.86rem; }
+.course-folder kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem;
+  border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 0.3rem; background: var(--soft);
+}
+a.step-where-link { text-decoration: none; cursor: pointer; }
+a.step-where-link:hover { background: var(--accent-dark); color: #fff; border-color: var(--accent-dark); }
+a.step-where-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
