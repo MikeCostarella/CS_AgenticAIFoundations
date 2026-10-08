@@ -7,6 +7,7 @@
 
 import { COURSE } from "./course";
 import { MODULES, UNITS } from "./modules";
+import { NOTES_BY_MODULE, noteBlockText } from "./lectures";
 import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS } from "./projects";
 import { RESOURCES, resolveRefs } from "./resources";
 import { TOOLS, TOOLS_LEDE, TOOLS_SECTIONS } from "./tools";
@@ -14,6 +15,7 @@ import type { LabTask, PageSection } from "./types";
 
 export type SearchKind =
   | "module"
+  | "notes"
   | "lab"
   | "checkpoint"
   | "unit"
@@ -44,6 +46,7 @@ export interface SearchDoc {
 /** Human label for each kind, used for the result badge and page grouping. */
 export const KIND_LABEL: Record<SearchKind, string> = {
   module: "Module",
+  notes: "Lecture notes",
   lab: "Lab",
   checkpoint: "Checkpoint",
   unit: "Unit",
@@ -56,6 +59,7 @@ export const KIND_LABEL: Record<SearchKind, string> = {
 /** Order the full results page groups results in. */
 export const KIND_ORDER: SearchKind[] = [
   "module",
+  "notes",
   "lab",
   "checkpoint",
   "unit",
@@ -91,10 +95,26 @@ function build(): SearchDoc[] {
       title: m.title,
       subtitle: m.subtitle,
       kicker,
-      keywords: m.topics,
-      body: [...m.overview, ...m.topics, m.gradNote ?? ""].filter(Boolean).join(" "),
+      keywords: m.topics.map((t) => t.text),
+      body: [...m.overview, ...m.topics.map((t) => t.text), m.gradNote ?? ""].filter(Boolean).join(" "),
       href: `#/m/${m.id}`,
     });
+
+    // One document per written lecture-notes section, so a search lands on the topic.
+    for (const sec of NOTES_BY_MODULE[m.id]?.sections ?? []) {
+      const topic = m.topics.find((t) => t.id === sec.topic);
+      if (!topic) continue;
+      docs.push({
+        id: `notes-${m.id}-${sec.topic}`,
+        kind: "notes",
+        title: topic.text,
+        subtitle: `Lecture notes · Module ${m.number} — ${m.title}`,
+        kicker: `Lecture notes · Week ${m.weeks}`,
+        keywords: [topic.text],
+        body: [...sec.blocks.map(noteBlockText), sec.takeaway ?? ""].filter(Boolean).join(" "),
+        href: `#/m/${m.id}/notes?s=topic-${sec.topic}`,
+      });
+    }
 
     if (m.lab) {
       docs.push({

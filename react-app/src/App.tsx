@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HomePage from "./components/HomePage";
 import SyllabusPage from "./components/SyllabusPage";
 import ModulePage from "./components/ModulePage";
+import NotesPage from "./components/NotesPage";
 import ProjectsPage from "./components/ProjectsPage";
 import ToolsPage from "./components/ToolsPage";
 import ResourcesPage from "./components/ResourcesPage";
@@ -24,7 +25,8 @@ type Route =
   | { page: "tools" }
   | { page: "resources" }
   | { page: "search"; query: string }
-  | { page: "module"; id: string };
+  | { page: "module"; id: string }
+  | { page: "notes"; id: string };
 
 interface Location {
   route: Route;
@@ -42,8 +44,8 @@ function parseHash(nonce: number): Location {
   const section = params.get("s");
 
   const route = ((): Route => {
-    const m = /^#\/m\/([a-z0-9]+)$/.exec(path);
-    if (m && MODULE_BY_ID[m[1]]) return { page: "module", id: m[1] };
+    const m = /^#\/m\/([a-z0-9]+)(\/notes)?$/.exec(path);
+    if (m && MODULE_BY_ID[m[1]]) return m[2] ? { page: "notes", id: m[1] } : { page: "module", id: m[1] };
     if (path === "#/syllabus") return { page: "syllabus" };
     if (path === "#/projects") return { page: "projects" };
     if (path === "#/tools") return { page: "tools" };
@@ -76,7 +78,7 @@ const TOP_LINKS: { href: string; label: string; page: Route["page"] }[] = [
 
 export default function App() {
   const { route, section, nonce } = useLocation();
-  const activeModId = route.page === "module" ? route.id : null;
+  const activeModId = route.page === "module" || route.page === "notes" ? route.id : null;
 
   // Scroll: to the requested section when one is given, otherwise to the top.
   useEffect(() => {
@@ -139,6 +141,7 @@ export default function App() {
           {route.page === "resources" && <ResourcesPage />}
           {route.page === "search" && <SearchPage query={route.query} />}
           {route.page === "module" && <ModulePage mod={MODULE_BY_ID[route.id]} />}
+          {route.page === "notes" && <NotesPage mod={MODULE_BY_ID[route.id]} />}
         </main>
       </div>
 

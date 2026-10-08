@@ -512,6 +512,7 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
   background: var(--chip); color: var(--ink-2); white-space: nowrap;
 }
 .sr-kind.k-module { background: var(--tint); color: var(--accent-dark); }
+.sr-kind.k-notes { background: var(--card); color: var(--accent-dark); border: 1px solid var(--tint-border); }
 .sr-kind.k-lab { background: var(--lab-bg); color: var(--lab); }
 .sr-kind.k-checkpoint { background: var(--cp-bg); color: var(--cp); }
 .sr-kicker { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
@@ -640,3 +641,77 @@ h2 { font-size: 1.18rem; margin: 0 0 10px; }
 a.step-where-link { text-decoration: none; cursor: pointer; }
 a.step-where-link:hover { background: var(--accent-dark); color: #fff; border-color: var(--accent-dark); }
 a.step-where-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ------------------------------------------------------------ lecture notes */
+/* Module page: topic bullets link to their notes; unwritten ones say so. */
+.notes-status { margin: -4px 0 8px; font-size: 0.88rem; color: var(--ink-2); }
+.notes-status a { color: var(--accent-dark); font-weight: 600; text-decoration: none; }
+.notes-status a:hover { text-decoration: underline; }
+.notes-status.notes-none { color: var(--text-muted); font-style: italic; }
+.topic-link { color: var(--accent-dark); text-decoration: none; border-bottom: 1px dashed var(--tint-border); }
+.topic-link:hover { border-bottom-style: solid; }
+.notes-coming {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted); border: 1px solid var(--border); border-radius: 20px; padding: 0 7px; margin-left: 4px;
+  vertical-align: 1px;
+}
+.tag-notes { background: var(--tint); color: var(--accent-dark); }
+
+/* Notes page */
+.notes-intro { color: var(--ink-2); }
+.notes-toc {
+  margin: 18px 0 8px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 18px; box-shadow: var(--shadow);
+}
+.notes-toc-head { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-dark); margin-bottom: 4px; }
+.notes-toc ol { margin: 0; padding-left: 1.4em; }
+.notes-toc li { margin: 4px 0; }
+.notes-toc a { color: var(--accent-dark); text-decoration: none; }
+.notes-toc a:hover { text-decoration: underline; }
+.notes-toc-missing { color: var(--text-muted); }
+
+.note-section { margin-top: 34px; padding-top: 6px; border-top: 1px solid var(--border); }
+.note-kicker { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-top: 10px; }
+.note-section h2 { font-size: 1.28rem; margin-top: 2px; }
+.note-section h3 { font-size: 0.98rem; margin: 0 0 6px; }
+.note-section p, .note-list li { line-height: 1.62; }
+.note-section :not(pre) > code { font-size: 0.88em; background: var(--tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+.note-list li { margin: 5px 0; }
+
+.note-code { margin: 14px 0; }
+.note-code figcaption { font-size: 0.8rem; font-weight: 700; color: var(--ink-2); margin-bottom: 4px; }
+.note-code-note { font-size: 0.88rem; color: var(--ink-2); margin: 6px 0 0; }
+
+.note-table-wrap { overflow-x: auto; margin: 14px 0; }
+.note-table { border-collapse: collapse; width: 100%; font-size: 0.88rem; background: var(--card); }
+.note-table caption { text-align: left; font-size: 0.8rem; font-weight: 700; color: var(--ink-2); padding-bottom: 6px; }
+.note-table th, .note-table td { border: 1px solid var(--border); padding: 7px 10px; text-align: left; vertical-align: top; }
+.note-table thead th { background: var(--tint); color: var(--ink); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.note-table tbody th { font-weight: 600; color: var(--ink); min-width: 9em; }
+
+.note-callout { margin: 16px 0; padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--tint-border); border-left-width: 4px; background: var(--tint); }
+.note-callout p { margin: 0; }
+.note-callout-title { font-weight: 700; font-size: 0.86rem; margin-bottom: 3px; color: var(--accent-dark); }
+.note-callout-tip { background: var(--lab-bg); border-color: var(--lab); }
+.note-callout-tip .note-callout-title { color: var(--lab); }
+.note-callout-warning { background: var(--cp-bg); border-color: var(--cp); }
+.note-callout-warning .note-callout-title { color: var(--cp); }
+
+.note-takeaway {
+  margin: 18px 0 10px; padding: 10px 16px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--tint-border); box-shadow: var(--shadow);
+}
+.note-takeaway b { color: var(--accent-dark); }
+
+.note-check { margin: 12px 0; }
+.note-check details { border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; margin: 6px 0; background: var(--card); }
+.note-check summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+.note-check summary::after { content: "  Show answer"; font-weight: 400; font-size: 0.8rem; color: var(--accent-dark); }
+.note-check details[open] summary::after { content: "  Hide answer"; }
+.note-check details p { margin: 8px 0 2px; color: var(--ink-2); }
+
+.note-readings { font-size: 0.88rem; color: var(--ink-2); }
+.note-readings a { color: var(--accent-dark); }
+.note-nav { font-size: 0.84rem; color: var(--text-muted); }
+.note-nav a { color: var(--accent-dark); text-decoration: none; }
+.note-nav a:hover { text-decoration: underline; }

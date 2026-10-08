@@ -30,6 +30,8 @@ export const RESOURCES: Resource[] = [
   { id: "mcp", group: "Documentation", label: "Model Context Protocol", url: "https://modelcontextprotocol.io", note: "Specification, concepts, and SDKs." },
   { id: "mcp-servers", group: "Documentation", label: "MCP reference servers", url: "https://github.com/modelcontextprotocol/servers", note: "Example servers to read and extend." },
   { id: "pydantic", group: "Documentation", label: "Pydantic", url: "https://docs.pydantic.dev", note: "Schema validation for Python." },
+  { id: "zod", group: "Documentation", label: "Zod", url: "https://zod.dev", note: "Schema validation for TypeScript; Zod 4 emits JSON Schema with z.toJSONSchema()." },
+  { id: "json-schema", group: "Documentation", label: "JSON Schema reference", url: "https://json-schema.org/understanding-json-schema", note: "The schema language every structured-output mode speaks: types, required, additionalProperties, formats." },
 
   // Frameworks and tools
   { id: "langgraph", group: "Frameworks and tools", label: "LangGraph", url: "https://github.com/langchain-ai/langgraph", note: "Graph-based agent orchestration." },

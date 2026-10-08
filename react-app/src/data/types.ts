@@ -47,7 +47,9 @@ export interface ModuleDef {
   title: string;
   subtitle: string;
   overview: string[];
-  topics: string[];
+  /** Lecture topics. The id is permanent: lecture notes, the outcome map, and
+   *  links all point at it, so reword the text freely but never change the id. */
+  topics: TopicDef[];
   /** Ids from data/resources.ts. */
   resources?: string[];
   lab?: Lab | null;
@@ -55,6 +57,52 @@ export interface ModuleDef {
   checkpoint?: string;
   /** Additional expectation for students enrolled at the graduate level. */
   gradNote?: string;
+}
+
+/** One lecture topic, e.g. { id: "json-schema", text: "Structured output modes and JSON Schema" }. */
+export interface TopicDef {
+  /** Stable, unique within its module: lowercase words joined by hyphens. */
+  id: string;
+  text: string;
+}
+
+// ---------------------------------------------------------------- lecture notes
+// One file per module under src/data/lectures/, one section per lecture topic,
+// joined to the topic by its id. Rendered at #/m/<id>/notes.
+//
+// Text in paragraphs, list items, callouts, and table cells may use `code`,
+// **bold**, and [[resource-id]] links (see components/NoteText.tsx).
+
+export type NoteBlock =
+  /** A paragraph. */
+  | string
+  /** A bulleted (or numbered) list. */
+  | { list: string[]; ordered?: boolean }
+  /** A code panel with a Copy button. */
+  | { code: string; title?: string; note?: string }
+  /** A small table; the first column is usually the thing being compared. */
+  | { table: { head: string[]; rows: string[][]; caption?: string } }
+  /** A boxed aside: a tip, a warning, or a "why this matters". */
+  | { callout: string; title?: string; tone?: "tip" | "warning" | "aside" };
+
+export interface LectureSection {
+  /** The topic this section teaches: ModuleDef.topics[].id. */
+  topic: string;
+  blocks: NoteBlock[];
+  /** The one sentence to carry out of the room. */
+  takeaway?: string;
+  /** Check-yourself questions; the answer is revealed on click. */
+  check?: { q: string; a: string }[];
+  /** Resource ids (data/resources.ts) most relevant to this topic. */
+  readings?: string[];
+}
+
+export interface LectureNotesDef {
+  /** Module id these notes belong to, e.g. "m02". */
+  moduleId: string;
+  /** Optional opening paragraph for the notes page. */
+  intro?: string;
+  sections: LectureSection[];
 }
 
 export interface UnitDef {

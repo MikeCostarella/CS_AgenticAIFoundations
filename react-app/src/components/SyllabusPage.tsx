@@ -1,4 +1,5 @@
 import { MODULES, UNITS } from "../data/modules";
+import { notesCoverage } from "../data/lectures";
 
 export default function SyllabusPage() {
   return (
@@ -51,6 +52,14 @@ export default function SyllabusPage() {
                     <span className="sm-sub">Week {m.weeks} · {m.subtitle}</span>
                   </span>
                   <span className="sm-tags">
+                    {(() => {
+                      const { written, total } = notesCoverage(m);
+                      return written > 0 ? (
+                        <span className="tag tag-notes" title="Lecture notes written">
+                          Notes {written}/{total}
+                        </span>
+                      ) : null;
+                    })()}
                     {m.lab && <span className="tag tag-lab">Lab</span>}
                     {m.checkpoint && <span className="tag tag-cp">Checkpoint</span>}
                     {m.gradNote && <span className="tag tag-grad">Grad</span>}
