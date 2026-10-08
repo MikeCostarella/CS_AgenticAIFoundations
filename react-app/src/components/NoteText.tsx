@@ -4,11 +4,17 @@ import RichText from "./RichText";
 import Term from "./Term";
 
 // Inline markup for lecture notes: {{term-id}} or {{term-id|words}} glossary
-// terms, `code`, **bold**, *italic*, and [[resource-id]] links (the last
+// terms, `code`, **bold**, *italic*, [[resource-id]] links,
+// [shown words](url) links, and bare https:// addresses (the last
 // handled by RichText). Deliberately tiny — not Markdown.
 
+/** [shown words](https://… or #/…) — a link written in the text. */
+const LINK = /\[[^\][]+\]\((?:https?:\/\/|#\/)[^)\s]+\)/;
+/** A bare https://… address, so a pasted URL is never dead text. */
+const BARE_URL = /https?:\/\/[^\s<>()]+[^\s<>().,;:!?'"]/;
+
 const INLINE = new RegExp(
-  "(" + TERM_PATTERN.source + "|`[^`]+`|\\*\\*[^*]+\\*\\*|\\*[^*\\s][^*]*\\*)",
+  "(" + TERM_PATTERN.source + "|" + LINK.source + "|" + BARE_URL.source + "|`[^`]+`|\\*\\*[^*]+\\*\\*|\\*[^*\\s][^*]*\\*)",
   "g",
 );
 
@@ -25,6 +31,21 @@ export default function NoteText({ text, terms = true }: { text: string; terms?:
     if (tm && tm.index === 0 && tm[0] === p) {
       const shown = tm[2] ?? TERM_BY_ID[tm[1]]?.term ?? tm[1];
       out.push(terms ? <Term key={key++} id={tm[1]}>{shown}</Term> : <Fragment key={key++}>{shown}</Fragment>);
+    } else if (p.startsWith("[") && !p.startsWith("[[")) {
+      const close = p.indexOf("](");
+      const href = p.slice(close + 2, -1);
+      const internal = href.startsWith("#");
+      out.push(
+        <a key={key++} href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noreferrer"}>
+          {p.slice(1, close)}
+        </a>,
+      );
+    } else if (/^https?:\/\//.test(p)) {
+      out.push(
+        <a key={key++} href={p} target="_blank" rel="noreferrer">
+          {p}
+        </a>,
+      );
     } else if (p.startsWith("`")) {
       out.push(<code key={key++}>{p.slice(1, -1)}</code>);
     } else if (p.startsWith("**")) {

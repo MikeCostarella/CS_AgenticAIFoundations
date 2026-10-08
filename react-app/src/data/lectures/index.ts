@@ -63,10 +63,10 @@ export function courseNotesCoverage(): { written: number; total: number } {
   );
 }
 
-/** Strips the inline markup NoteText understands: {{term}}, `code`, **bold**, *italic*, [[resource-id]]. */
+/** Strips the inline markup NoteText understands: {{term}}, [words](url), `code`, **bold**, *italic*, [[resource-id]]. */
 export function plainText(s: string): string {
   return s
-    .replace(new RegExp(TERM_PATTERN.source, "g"), (_w, id: string, shown?: string) => shown ?? TERM_BY_ID[id]?.term ?? id).replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*\s][^*]*)\*/g, "$1").replace(/\[\[([a-z0-9-]+)\]\]/g, "");
+    .replace(new RegExp(TERM_PATTERN.source, "g"), (_w, id: string, shown?: string) => shown ?? TERM_BY_ID[id]?.term ?? id).replace(/\[([^\][]+)\]\((?:https?:\/\/|#\/)[^)\s]+\)/g, "$1").replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*\s][^*]*)\*/g, "$1").replace(/\[\[([a-z0-9-]+)\]\]/g, "");
 }
 
 /** A block's searchable text. Code is left out: it matches too many queries. */
