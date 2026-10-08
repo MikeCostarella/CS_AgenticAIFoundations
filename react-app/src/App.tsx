@@ -6,6 +6,7 @@ import NotesPage from "./components/NotesPage";
 import ProjectsPage from "./components/ProjectsPage";
 import ToolsPage from "./components/ToolsPage";
 import ResourcesPage from "./components/ResourcesPage";
+import GlossaryPage from "./components/GlossaryPage";
 import SearchPage from "./components/SearchPage";
 import SearchBox from "./components/SearchBox";
 import BuildStamp from "./components/BuildStamp";
@@ -24,6 +25,7 @@ type Route =
   | { page: "projects" }
   | { page: "tools" }
   | { page: "resources" }
+  | { page: "glossary" }
   | { page: "search"; query: string }
   | { page: "module"; id: string }
   | { page: "notes"; id: string };
@@ -50,6 +52,7 @@ function parseHash(nonce: number): Location {
     if (path === "#/projects") return { page: "projects" };
     if (path === "#/tools") return { page: "tools" };
     if (path === "#/resources") return { page: "resources" };
+    if (path === "#/glossary") return { page: "glossary" };
     if (path === "#/search") return { page: "search", query: params.get("q") ?? "" };
     return { page: "home" };
   })();
@@ -139,6 +142,7 @@ export default function App() {
           {route.page === "projects" && <ProjectsPage />}
           {route.page === "tools" && <ToolsPage />}
           {route.page === "resources" && <ResourcesPage />}
+          {route.page === "glossary" && <GlossaryPage />}
           {route.page === "search" && <SearchPage query={route.query} />}
           {route.page === "module" && <ModulePage mod={MODULE_BY_ID[route.id]} />}
           {route.page === "notes" && <NotesPage mod={MODULE_BY_ID[route.id]} />}

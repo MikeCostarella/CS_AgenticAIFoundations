@@ -7,7 +7,8 @@
 
 import { COURSE } from "./course";
 import { MODULES, UNITS } from "./modules";
-import { NOTES_BY_MODULE, noteBlockText } from "./lectures";
+import { NOTES_BY_MODULE, noteBlockText, plainText } from "./lectures";
+import { GLOSSARY } from "./glossary";
 import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS } from "./projects";
 import { RESOURCES, resolveRefs } from "./resources";
 import { TOOLS, TOOLS_LEDE, TOOLS_SECTIONS } from "./tools";
@@ -16,6 +17,7 @@ import type { LabTask, PageSection } from "./types";
 export type SearchKind =
   | "module"
   | "notes"
+  | "term"
   | "lab"
   | "checkpoint"
   | "unit"
@@ -47,6 +49,7 @@ export interface SearchDoc {
 export const KIND_LABEL: Record<SearchKind, string> = {
   module: "Module",
   notes: "Lecture notes",
+  term: "Glossary",
   lab: "Lab",
   checkpoint: "Checkpoint",
   unit: "Unit",
@@ -60,6 +63,7 @@ export const KIND_LABEL: Record<SearchKind, string> = {
 export const KIND_ORDER: SearchKind[] = [
   "module",
   "notes",
+  "term",
   "lab",
   "checkpoint",
   "unit",
@@ -83,6 +87,20 @@ function sectionText(s: PageSection): string {
 
 function build(): SearchDoc[] {
   const docs: SearchDoc[] = [];
+
+  // ------------------------------------------------------------- glossary
+  for (const t of GLOSSARY) {
+    docs.push({
+      id: `term-${t.id}`,
+      kind: "term",
+      title: t.term,
+      subtitle: plainText(t.def).split(". ")[0] + ".",
+      kicker: "Glossary",
+      keywords: [t.term, ...(t.aka ?? [])],
+      body: plainText(t.def),
+      href: `#/glossary?s=term-${t.id}`,
+    });
+  }
 
   // ------------------------------------------------------------- modules
   for (const m of MODULES) {

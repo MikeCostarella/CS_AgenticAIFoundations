@@ -70,6 +70,7 @@ export default function MainMenu() {
                 <a href="#/projects">Projects</a>
                 <a href="#/tools">Tools &amp; Access</a>
                 <a href="#/resources">Resources</a>
+                <a href="#/glossary">Glossary</a>
               </div>
             )}
           </div>

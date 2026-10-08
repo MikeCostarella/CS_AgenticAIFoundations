@@ -5,6 +5,7 @@
 // to ALL_NOTES below, and write sections in any order (the page renders them
 // in the module's topic order). Topics without a section show "notes coming".
 
+import { TERM_BY_ID, TERM_PATTERN } from "../glossary";
 import { MODULE_BY_ID, MODULES } from "../modules";
 import type { LectureNotesDef, ModuleDef, NoteBlock } from "../types";
 import { M02_NOTES } from "./m02";
@@ -48,9 +49,10 @@ export function courseNotesCoverage(): { written: number; total: number } {
   );
 }
 
-/** Strips the inline markup NoteText understands: `code`, **bold**, *italic*, [[resource-id]]. */
+/** Strips the inline markup NoteText understands: {{term}}, `code`, **bold**, *italic*, [[resource-id]]. */
 export function plainText(s: string): string {
-  return s.replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*\s][^*]*)\*/g, "$1").replace(/\[\[([a-z0-9-]+)\]\]/g, "");
+  return s
+    .replace(new RegExp(TERM_PATTERN.source, "g"), (_w, id: string, shown?: string) => shown ?? TERM_BY_ID[id]?.term ?? id).replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*\s][^*]*)\*/g, "$1").replace(/\[\[([a-z0-9-]+)\]\]/g, "");
 }
 
 /** A block's searchable text. Code is left out: it matches too many queries. */
@@ -60,6 +62,29 @@ export function noteBlockText(b: NoteBlock): string {
   if ("table" in b) return [b.table.caption ?? "", ...b.table.head, ...b.table.rows.flat()].map(plainText).join(" ");
   if ("callout" in b) return plainText([b.title ?? "", b.callout].join(" "));
   return b.title ?? "";
+}
+
+/** Every raw string in a block (prose, list items, table cells, callouts), for scanning markup. */
+function blockStrings(b: NoteBlock): string[] {
+  if (typeof b === "string") return [b];
+  if ("list" in b) return b.list;
+  if ("table" in b) return [b.table.caption ?? "", ...b.table.head, ...b.table.rows.flat()];
+  if ("callout" in b) return [b.title ?? "", b.callout];
+  return [b.note ?? ""];
+}
+
+/** Where each glossary term is marked in the notes: term id → [{ moduleId, topicId }]. */
+export function termUsage(): Record<string, { moduleId: string; topicId: string }[]> {
+  const out: Record<string, { moduleId: string; topicId: string }[]> = {};
+  const re = new RegExp(TERM_PATTERN.source, "g");
+  for (const n of ALL_NOTES) {
+    for (const s of n.sections) {
+      const text = [...s.blocks.flatMap(blockStrings), s.takeaway ?? "", ...(s.check ?? []).flatMap((c) => [c.q, c.a])].join(" ");
+      const ids = new Set([...text.matchAll(re)].map((m) => m[1]));
+      for (const id of ids) (out[id] ??= []).push({ moduleId: n.moduleId, topicId: s.topic });
+    }
+  }
+  return out;
 }
 
 /** Integrity checks the type system cannot express (shown on notes pages in dev builds). */
@@ -87,6 +112,12 @@ export function lectureProblems(): string[] {
       if (!mod.topics.some((t) => t.id === s.topic)) problems.push(`${n.moduleId} notes: section for unknown topic "${s.topic}"`);
       if (seenSections.has(s.topic)) problems.push(`${n.moduleId} notes: two sections for topic "${s.topic}"`);
       seenSections.add(s.topic);
+    }
+  }
+  for (const [id, uses] of Object.entries(termUsage())) {
+    if (!TERM_BY_ID[id]) {
+      const where = uses.map((u) => `${u.moduleId}/${u.topicId}`).join(", ");
+      problems.push(`Unknown glossary term {{${id}}} in ${where}`);
     }
   }
   return problems;

@@ -715,3 +715,52 @@ a.step-where-link:focus-visible { outline: 2px solid var(--accent); outline-offs
 .note-nav { font-size: 0.84rem; color: var(--text-muted); }
 .note-nav a { color: var(--accent-dark); text-decoration: none; }
 .note-nav a:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------ glossary terms */
+/* A term in prose: reads as text with a dotted underline; the definition pops
+   up on hover, keyboard focus, or tap. */
+.term { position: relative; display: inline; }
+.term-btn {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: help;
+  text-decoration: underline dotted var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px;
+}
+.term-btn:hover, .term.open .term-btn { color: var(--accent-dark); }
+.term-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; border-radius: 3px; }
+.term-tip {
+  display: none; position: absolute; z-index: 40; left: 0; top: calc(100% + 6px);
+  width: min(360px, 80vw); padding: 10px 14px; border-radius: var(--radius);
+  background: var(--card); color: var(--ink); border: 1px solid var(--tint-border);
+  box-shadow: 0 8px 28px rgba(29, 26, 46, 0.18); font-size: 0.88rem; line-height: 1.5;
+  font-weight: 400; font-style: normal; text-align: left; white-space: normal;
+}
+/* A transparent bridge so the pointer can move from the word into the popup. */
+.term-tip::before { content: ""; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
+.term:hover .term-tip, .term:focus-within .term-tip, .term.open .term-tip { display: block; }
+.term-tip-name { display: block; font-weight: 700; color: var(--accent-dark); margin-bottom: 2px; }
+.term-tip-def { display: block; }
+.term-tip-def code { font-size: 0.88em; background: var(--tint); padding: 1px 4px; border-radius: 4px; }
+.term-tip-links { display: block; margin-top: 6px; font-size: 0.8rem; }
+.term-tip-links a { color: var(--accent-dark); }
+@media (max-width: 640px) {
+  .term-tip { position: fixed; left: 16px; right: 16px; bottom: 16px; top: auto; width: auto; }
+  .term-tip::before { display: none; }
+}
+
+/* Glossary page */
+.gl-letters { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 18px; }
+.gl-letters a {
+  min-width: 2em; text-align: center; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--tint-border);
+  color: var(--accent-dark); text-decoration: none; font-weight: 700; font-size: 0.86rem;
+}
+.gl-letters a:hover { background: var(--tint); }
+.gl-list { margin: 0; }
+.gl-entry { padding: 12px 0; border-bottom: 1px solid var(--border); position: relative; }
+.gl-anchor { position: absolute; top: 0; }
+.gl-entry dt { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+.gl-aka { font-weight: 400; font-size: 0.86rem; color: var(--text-muted); }
+.gl-entry dd { margin: 4px 0 0; }
+.gl-entry dd p { margin: 0 0 4px; line-height: 1.55; }
+.gl-entry dd code { font-size: 0.88em; background: var(--tint); padding: 1px 5px; border-radius: 4px; }
+.gl-meta { font-size: 0.84rem; color: var(--text-muted); }
+.gl-meta a { color: var(--accent-dark); }
+.sr-kind.k-term { background: var(--card); color: var(--ink-2); border: 1px solid var(--border); }

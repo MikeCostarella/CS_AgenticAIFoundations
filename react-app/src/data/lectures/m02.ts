@@ -1,7 +1,7 @@
 import type { LectureNotesDef } from "../types";
 
 // Module 2 — Structured output and prompt contracts: lecture notes, one section per lecture topic.
-// Edit freely; keep each section's topic id in step with units.ts. Inline markup: `code`, **bold**, *italic*, [[resource-id]].
+// Edit freely; keep each section's topic id in step with units.ts. Inline markup: {{term-id}} or {{term-id|words}} glossary terms, `code`, **bold**, *italic*, [[resource-id]].
 
 export const M02_NOTES: LectureNotesDef = {
   "moduleId": "m02",
@@ -28,13 +28,13 @@ export const M02_NOTES: LectureNotesDef = {
                 "Prototyping, and as the baseline every lab starts from."
               ],
               [
-                "JSON mode",
+                "{{json-mode|JSON mode}}",
                 "The output parses as JSON.",
                 "The JSON is the wrong shape: missing keys, wrong types, extra fields.",
                 "Rarely on its own any more. It is the older, weaker form of the next row."
               ],
               [
-                "Schema-constrained output",
+                "{{structured-output|Schema-constrained output}}",
                 "The output matches your JSON Schema's structure: keys, types, required fields.",
                 "The values are wrong. A well-formed date can still be the wrong date. Some schema rules are not enforced (see below).",
                 "Production extraction, whenever your provider and model support it."
@@ -49,7 +49,7 @@ export const M02_NOTES: LectureNotesDef = {
             "caption": "Four ways to get structured output, weakest to strongest"
           }
         },
-        "**JSON Schema** is the common language of the last two rows. It is a JSON document that describes other JSON documents. You will mostly use a handful of keywords:",
+        "**{{json-schema|JSON Schema}}** is the common language of the last two rows. It is a JSON document that describes other JSON documents. You will mostly use a handful of keywords:",
         {
           "list": [
             "`type`: `object`, `array`, `string`, `number`, `integer`, `boolean`, or `null`. A list such as `[\"string\", \"null\"]` means *either*.",
@@ -60,18 +60,20 @@ export const M02_NOTES: LectureNotesDef = {
             "`description`: free text about the field. This is not a comment. The model reads it, so it works as an instruction."
           ]
         },
-        "You rarely write this by hand. In Lab 2, Pydantic generates it from the `Event` class, so the Python type and the schema the model sees cannot drift apart. Trimmed, the generated schema for one event looks like this:",
+        "You rarely write this by hand. In Lab 2, {{pydantic|Pydantic}} generates it from the `Event` class in `schema.py`, so the Python type and the schema the model sees cannot drift apart. Trimmed, the generated schema for one event looks like this:",
         {
           "code": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\":      { \"type\": \"string\", \"minLength\": 3, \"description\": \"Short name of the event\" },\n    \"date\":       { \"type\": \"string\", \"format\": \"date\", \"description\": \"ISO date, YYYY-MM-DD\" },\n    \"start_time\": { \"anyOf\": [{ \"type\": \"string\", \"format\": \"time\" }, { \"type\": \"null\" }],\n                    \"description\": \"24-hour HH:MM, or null when no time is stated\" },\n    \"cost_usd\":   { \"anyOf\": [{ \"type\": \"number\", \"minimum\": 0 }, { \"type\": \"null\" }],\n                    \"description\": \"0 if free, null if cost is not mentioned\" }\n  },\n  \"required\": [\"title\", \"date\"],\n  \"additionalProperties\": false\n}",
           "title": "Part of what Extraction.model_json_schema() produces (Lab 2, step 4)"
         },
-        "With the Claude API you can hand that schema to the model directly and have the output constrained to it. With the Python SDK, `messages.parse()` accepts the Pydantic class itself and gives back a validated object:",
+        "You can also hand that schema straight to the Claude API and have the model's output **constrained** to it, so the response is guaranteed to have that shape. Three terms come up when you do:",
+        {"list": ["**The {{sdk|SDK}}** (software development kit) is the `anthropic` Python package you installed with `pip` in Lab 1. It is the library your code uses to call the API.", "**A {{pydantic-class|Pydantic class}}** is a Python class that describes the shape of your data. In Lab 2 those are `Event` and `Extraction` in `schema.py`. Pydantic is the library behind them: it checks real data against the class, and it can print the class as a JSON Schema, which is where the schema above came from.", "**`messages.create()` vs. `messages.parse()`.** Lab 2's `extract.py` calls `create()`, which returns plain text, so your own code strips the fences and validates the text against `Extraction`. `parse()` does all of that in one call: you pass it the `Extraction` class, it sends the schema with the request, constrains the output, validates it, and returns an `Extraction` object instead of text."]},
+        "Here is the Lab 2 extraction rewritten with `parse()`:",
         {
           "code": "from anthropic import Anthropic\nfrom schema import Extraction\n\nclient = Anthropic()\n\nresponse = client.messages.parse(\n    model=MODEL,\n    max_tokens=1024,\n    system=system_prompt,\n    messages=[{\"role\": \"user\", \"content\": text}],\n    output_format=Extraction,     # the Pydantic class from schema.py\n)\nresult = response.parsed_output  # an Extraction, already validated",
-          "title": "Schema-constrained output with the Claude Python SDK",
+          "title": "The Lab 2 extraction with messages.parse() instead of messages.create()",
           "note": "At the raw API level the same request sets `output_config.format` to `{\"type\": \"json_schema\", \"schema\": ...}`. An earlier version used a top-level `output_format` parameter that is now deprecated. Provider parameter names change, so check [[anthropic-api]] (or [[openai-api]] for OpenAI's equivalent, Structured Outputs) before you copy any example, including this one."
         },
-        "The forced-tool-call technique works with any model that supports tool use. You define one tool whose `input_schema` is your schema, and you tell the API the model *must* call it. The \"arguments\" the model sends are your record:",
+        "The forced-tool-call technique works with any model that supports {{tool-call|tool use}}. You define one tool whose `input_schema` is your schema, and you tell the API the model *must* call it. The \"arguments\" the model sends are your record:",
         {
           "code": "response = client.messages.create(\n    model=MODEL,\n    max_tokens=1024,\n    system=system_prompt,\n    tools=[{\n        \"name\": \"record_events\",\n        \"description\": \"Record every event found in the text.\",\n        \"input_schema\": Extraction.model_json_schema(),\n    }],\n    tool_choice={\"type\": \"tool\", \"name\": \"record_events\"},\n    messages=[{\"role\": \"user\", \"content\": text}],\n)\ncall = next(b for b in response.content if b.type == \"tool_use\")\nresult = Extraction.model_validate(call.input)",
           "title": "The same extraction as a forced tool call"
@@ -112,7 +114,7 @@ export const M02_NOTES: LectureNotesDef = {
     {
       "topic": "second-rung",
       "blocks": [
-        "Module 1 introduced the decision ladder. At the bottom is deterministic automation: plain code, rules, and workflow tools. In the middle is a single model call. At the top is an agent that decides its own next step. The rule is to climb only as high as the problem forces you. This topic is about the middle rung, because it is where most useful \"AI features\" actually live.",
+        "Module 1 introduced the {{decision-ladder|decision ladder}}. At the bottom is deterministic automation: plain code, rules, and workflow tools. In the middle is a single model call. At the top is an {{agent|agent}} that decides its own next step. The rule is to climb only as high as the problem forces you. This topic is about the middle rung, because it is where most useful \"AI features\" actually live.",
         "On this rung the model does exactly one job: it **interprets** text that code cannot handle reliably. Everything around it stays ordinary code, which you can read, test, and debug. Lab 2's `extract.py` is a complete example:",
         {
           "list": [
@@ -234,13 +236,13 @@ export const M02_NOTES: LectureNotesDef = {
             "caption": "Four layers of checking model output"
           }
         },
-        "**Pydantic** (Python) covers the first three layers from one class. Field constraints handle single values. A validator handles rules that need code, and a validator can either **normalize** a value or **reject** it:",
+        "**{{pydantic|Pydantic}}** (Python) covers the first three layers from one class. Field constraints handle single values. A validator handles rules that need code, and a validator can either **normalize** a value or **reject** it:",
         {
           "code": "import datetime as dt\n\nfrom pydantic import BaseModel, ConfigDict, Field, field_validator\n\n\nclass Event(BaseModel):\n    model_config = ConfigDict(extra=\"forbid\")\n\n    title: str = Field(min_length=3, description=\"Short name of the event\")\n    date: dt.date = Field(description=\"ISO date, YYYY-MM-DD\")\n    cost_usd: float | None = Field(default=None, ge=0)\n\n    @field_validator(\"title\")\n    @classmethod\n    def tidy_title(cls, v: str) -> str:\n        v = \" \".join(v.split())          # normalize: collapse stray whitespace\n        if v.lower() in {\"event\", \"untitled\", \"n/a\"}:\n            raise ValueError(\"title is a placeholder, not the event's name\")  # reject\n        return v",
           "title": "Normalize what is unambiguous; reject what is not"
         },
         "Normalize only when there is exactly one right answer: trimming whitespace, or lower-casing an `enum` value (the Claude docs warn that enum values can come back with different capitalization). Never \"repair\" a value by guessing. Turning \"8 PM\" into `20:00` in a validator looks helpful until it meets \"8\" with no AM or PM.",
-        "**Zod** is the same idea for TypeScript, which matters once agents run in a web app or a Node service:",
+        "**{{zod|Zod}}** is the same idea for TypeScript, which matters once agents run in a web app or a Node service:",
         {
           "code": "import { z } from \"zod\";\n\nconst Event = z.object({\n  title: z.string().min(3),\n  date: z.iso.date(),                     // \"YYYY-MM-DD\"\n  start_time: z.string().regex(/^\\d{2}:\\d{2}$/).nullable(),\n  cost_usd: z.number().min(0).nullable(),\n}).strict();                              // like extra=\"forbid\"\n\nconst Extraction = z.object({ events: z.array(Event) }).strict();\ntype Extraction = z.infer<typeof Extraction>;   // the TypeScript type, for free\n\nconst parsed = Extraction.safeParse(JSON.parse(raw));\nif (!parsed.success) console.error(parsed.error.issues);   // field-by-field, like Pydantic\n\nconst schemaForPrompt = z.toJSONSchema(Extraction);         // Zod 4: schema for the model",
           "title": "The Event contract in Zod 4",
@@ -328,7 +330,7 @@ export const M02_NOTES: LectureNotesDef = {
           "list": [
             "**Write constraints a test can check.** \"Be accurate\" cannot be tested. \"`cost_usd` is 0 when the text says free and null when cost is not mentioned\" can, and Lab 2's test set does.",
             "**Decide the edge cases yourself.** No events, two dates for one event, a year that is not stated, a price for adults and another for children. If the prompt does not decide, the model decides differently on different days.",
-            "**Contract in the system prompt, data in the user message.** The system prompt is the stable interface. The newsletter is input. Mixing them makes the prompt harder to version and easier to hijack.",
+            "**Contract in the {{system-prompt|system prompt}}, data in the user message.** The system prompt is the stable interface. The newsletter is input. Mixing them makes the prompt harder to version and easier to hijack.",
             "**Fence off untrusted input.** Put the document inside tags such as `<newsletter>…</newsletter>` and say that anything inside is data to extract from, never instructions. A newsletter that says \"ignore previous instructions\" is a preview of Module 12.",
             "**Generate the format, don't retype it.** The `{schema}` placeholder is filled from `schema.py`, so the prompt cannot describe a field the validator does not have."
           ]
@@ -367,7 +369,7 @@ export const M02_NOTES: LectureNotesDef = {
     {
       "topic": "few-shot",
       "blocks": [
-        "A **few-shot example** is a worked input and output placed in the prompt. Instructions *tell* the model the rule. An example *shows* the rule applied to a concrete case. Some rules are much easier to show than to state.",
+        "A **{{few-shot|few-shot example}}** is a worked input and output placed in the prompt. Instructions *tell* the model the rule. An example *shows* the rule applied to a concrete case. Some rules are much easier to show than to state.",
         "Examples help most with:",
         {
           "list": [
@@ -382,8 +384,8 @@ export const M02_NOTES: LectureNotesDef = {
             "**The model copies surface details.** If the example's event is on 2026-10-14, watch for 10-14 turning up in answers where it does not belong. Use example data clearly unlike your real inputs.",
             "**They only show easy cases.** An example of a clean, fully specified event teaches nothing the instructions did not already say.",
             "**They contradict the rules.** If the example sets `cost_usd` to 0 for an event whose cost is not mentioned, the model follows the example, not your rule.",
-            "**Structure is already enforced.** With schema-constrained output, examples no longer need to teach the format. Keep them only for judgment calls.",
-            "**They are long.** Every example ships with every call, so you pay its input tokens on every request."
+            "**Structure is already enforced.** With {{structured-output|schema-constrained output}}, examples no longer need to teach the format. Keep them only for judgment calls.",
+            "**They are long.** Every example ships with every call, so you pay its input {{token|tokens}} on every request."
           ]
         },
         {
@@ -417,7 +419,7 @@ export const M02_NOTES: LectureNotesDef = {
     {
       "topic": "prompt-versioning",
       "blocks": [
-        "If changing a file can change what your program does, that file is code. Prompts qualify. So do the few-shot examples inside them, the schema, the model id, and the temperature. All of them belong in version control, get reviewed, and get tested.",
+        "If changing a file can change what your program does, that file is code. Prompts qualify. So do the few-shot examples inside them, the schema, the model id, and the {{temperature|temperature}}. All of them belong in version control, get reviewed, and get tested.",
         "In Lab 2 the versions sit side by side as `prompts/extract_v1.txt` and `extract_v2.txt` so you can compare them. In a real project, git history holds the versions, and every call records which version produced it:",
         {
           "code": "import hashlib, json, logging\n\ndef fingerprint(prompt_template: str, schema: dict, model: str) -> dict:\n    \"\"\"Everything that, if changed, could change the output.\"\"\"\n    return {\n        \"prompt_sha\": hashlib.sha256(prompt_template.encode()).hexdigest()[:12],\n        \"schema_sha\": hashlib.sha256(json.dumps(schema, sort_keys=True).encode()).hexdigest()[:12],\n        \"model\": model,          # a pinned model id, not an alias that moves\n        \"temperature\": 0,\n    }\n\nlogging.info(\"extract %s\", json.dumps({\"input\": path, **fingerprint(template, schema, MODEL)}))",
@@ -456,7 +458,7 @@ export const M02_NOTES: LectureNotesDef = {
             "caption": "What to re-test, and when"
           }
         },
-        "A **prompt regression test** is what Lab 2 Task 3 builds: fixed inputs (`tests/cases.jsonl`), a grader that checks each field the way it deserves (a keyword for titles, an exact match for dates), a saved baseline (`results/v1.json`, committed *before* you change anything), and a comparison. Two numbers matter:",
+        "A **{{regression-test|prompt regression test}}** is what Lab 2 Task 3 builds: fixed inputs (`tests/cases.jsonl`), a grader that checks each field the way it deserves (a keyword for titles, an exact match for dates), a saved baseline (`results/v1.json`, committed *before* you change anything), and a comparison. Two numbers matter:",
         {
           "list": [
             "**The pass rate.** Did the change help overall?",

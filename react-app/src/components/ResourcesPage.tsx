@@ -4,7 +4,10 @@ export default function ResourcesPage() {
   return (
     <article className="page">
       <h1>Resources</h1>
-      <p className="lede">Papers, guides, documentation, and tools referenced across the modules.</p>
+      <p className="lede">
+        Papers, guides, documentation, and tools referenced across the modules. Short definitions of course terms are in
+        the <a href="#/glossary">Glossary</a>.
+      </p>
       {RESOURCE_GROUPS.map((g) => (
         <section className="res-group" key={g}>
           <h2>{g}</h2>
