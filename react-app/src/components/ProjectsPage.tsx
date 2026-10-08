@@ -1,5 +1,5 @@
 import RichText from "./RichText";
-import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS } from "../data/projects";
+import { PROJECT_NOTES, PROJECT_REQUIREMENTS, PROJECTS, projectSlug } from "../data/projects";
 
 export default function ProjectsPage() {
   return (
@@ -13,8 +13,8 @@ export default function ProjectsPage() {
       <section id="requirements">
         <h2>Every final project must include</h2>
         <ul className="topics">
-          {PROJECT_REQUIREMENTS.map((r) => (
-            <li key={r}>{r}</li>
+          {PROJECT_REQUIREMENTS.map((r, i) => (
+            <li key={r} id={`req-${i + 1}`}>{r}</li>
           ))}
         </ul>
       </section>
@@ -23,7 +23,7 @@ export default function ProjectsPage() {
         <h2>Example projects</h2>
         <div className="card-grid">
           {PROJECTS.map((p) => (
-            <div className="card" key={p.title}>
+            <div className="card" key={p.title} id={projectSlug(p.title)}>
               <div className="meta">{p.track}</div>
               <h3>{p.title}</h3>
               <p>{p.summary}</p>

@@ -8,6 +8,7 @@ import {
   UNIT_COUNT,
   UNITS,
 } from "../data/modules";
+import { OUTCOME_MAP, outcomeMapProblems, outcomeModules } from "../data/outcomeMap";
 
 type StatPanel = "labs" | "checkpoints" | null;
 
@@ -17,9 +18,29 @@ function splitCheckpoint(text: string): [string, string] {
   return i === -1 ? [text, ""] : [text.slice(0, i), text.slice(i + 2)];
 }
 
+/** [1, 3, 4] → "Modules 1, 3, 4"; [] → "the final project". */
+function modulesLabel(nums: number[]): string {
+  if (nums.length === 0) return "the final project";
+  return `${nums.length === 1 ? "Module" : "Modules"} ${nums.join(", ")}`;
+}
+
 export default function HomePage() {
   const [panel, setPanel] = useState<StatPanel>(null);
   const toggle = (p: Exclude<StatPanel, null>) => setPanel((cur) => (cur === p ? null : p));
+
+  // Which outcomes have their "where it's taught" list open.
+  const [openOutcomes, setOpenOutcomes] = useState<Set<number>>(() => new Set());
+  const allOpen = openOutcomes.size === COURSE.outcomes.length;
+  const toggleOutcome = (i: number) =>
+    setOpenOutcomes((cur) => {
+      const next = new Set(cur);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  const toggleAllOutcomes = () =>
+    setOpenOutcomes(allOpen ? new Set() : new Set(COURSE.outcomes.map((_, i) => i)));
+  const mapProblems = import.meta.env.DEV ? outcomeMapProblems() : [];
 
   return (
     <article className="home" id="top">
@@ -123,11 +144,68 @@ export default function HomePage() {
       </section>
 
       <section id="outcomes">
-        <h2>What you will be able to do</h2>
+        <div className="oc-heading">
+          <h2>What you will be able to do</h2>
+          <button type="button" className="oc-all" onClick={toggleAllOutcomes} aria-pressed={allOpen}>
+            {allOpen ? "Hide where each is taught" : "Show where each is taught"}
+          </button>
+        </div>
+        {mapProblems.length > 0 && (
+          <div className="oc-problems" role="alert">
+            <b>Outcome map (dev only):</b>
+            <ul>
+              {mapProblems.map((p) => (
+                <li key={p}>{p}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <ol className="outcomes">
-          {COURSE.outcomes.map((o, i) => (
-            <li key={i}>{o}</li>
-          ))}
+          {COURSE.outcomes.map((o, i) => {
+            const groups = OUTCOME_MAP[i] ?? [];
+            const refCount = groups.reduce((n, g) => n + g.refs.length, 0);
+            const open = openOutcomes.has(i);
+            return (
+              <li key={i} id={`outcome-${i + 1}`}>
+                {o}
+                {refCount > 0 && (
+                  <>
+                    {" "}
+                    <button
+                      type="button"
+                      className="oc-toggle"
+                      aria-expanded={open}
+                      aria-controls={`outcome-refs-${i + 1}`}
+                      onClick={() => toggleOutcome(i)}
+                    >
+                      Taught in {modulesLabel(outcomeModules(i))} · {refCount} references{" "}
+                      <span className="stat-caret" aria-hidden="true">▾</span>
+                    </button>
+                  </>
+                )}
+                {open && (
+                  <div className="oc-panel" id={`outcome-refs-${i + 1}`} aria-label={`Where outcome ${i + 1} is taught`}>
+                    {groups.map((g) => (
+                      <div className="oc-group" key={g.group}>
+                        <div className="oc-group-head">
+                          {g.group}
+                          {g.when && <span className="oc-when"> · {g.when}</span>}
+                        </div>
+                        <ul>
+                          {g.refs.map((r) => (
+                            <li key={r.href}>
+                              <span className="oc-kind">{r.kind}</span>
+                              <a href={r.href}>{r.kind === "Checkpoint" ? splitCheckpoint(r.text)[0] : r.text}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </section>
 

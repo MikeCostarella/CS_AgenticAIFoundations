@@ -10,6 +10,11 @@ export interface ProjectIdea {
   requirements: string[];
 }
 
+/** Anchor id for an example project card, e.g. "project-data-pipeline-agent". */
+export function projectSlug(title: string): string {
+  return "project-" + title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export const PROJECTS: ProjectIdea[] = [
   {
     title: "IT operations help-desk agent",

@@ -83,7 +83,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
         <h2>Lecture topics</h2>
         <ul className="topics">
           {mod.topics.map((t, i) => (
-            <li key={i}>{t}</li>
+            <li key={i} id={`topic-${i + 1}`}>{t}</li>
           ))}
         </ul>
       </section>
@@ -116,7 +116,7 @@ export default function ModulePage({ mod }: { mod: ModuleDef }) {
             {mod.lab.tasks.map((t, i) => {
               const task = typeof t === "string" ? { text: t, script: undefined } : t;
               return (
-                <li key={i}>
+                <li key={i} id={`lab-task-${i + 1}`}>
                   {task.text}
                   {task.script && (
                     <details className="lab-script">
