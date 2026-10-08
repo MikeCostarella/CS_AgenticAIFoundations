@@ -9,6 +9,7 @@ export interface Resource extends Link {
 
 export const RESOURCES: Resource[] = [
   // Papers
+  { id: "lost-in-middle", group: "Papers", label: "Lost in the Middle: How Language Models Use Long Contexts (Liu et al., 2023)", url: "https://arxiv.org/abs/2307.03172", note: "Why information buried in a long input is used less reliably than information at its start or end." },
   { id: "react", group: "Papers", label: "ReAct: Synergizing Reasoning and Acting in Language Models (Yao et al., 2022)", url: "https://arxiv.org/abs/2210.03629", note: "The reason → act → observe loop that underlies most agents." },
   { id: "toolformer", group: "Papers", label: "Toolformer: Language Models Can Teach Themselves to Use Tools (Schick et al., 2023)", url: "https://arxiv.org/abs/2302.04761", note: "Early evidence that models can learn when and how to call tools." },
   { id: "rag", group: "Papers", label: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al., 2020)", url: "https://arxiv.org/abs/2005.11401", note: "The paper that named RAG." },
@@ -29,6 +30,8 @@ export const RESOURCES: Resource[] = [
   { id: "openai-functions", group: "Documentation", label: "OpenAI function calling guide", url: "https://platform.openai.com/docs/guides/function-calling", note: "The same loop from a second vendor." },
   { id: "mcp", group: "Documentation", label: "Model Context Protocol", url: "https://modelcontextprotocol.io", note: "Specification, concepts, and SDKs." },
   { id: "mcp-servers", group: "Documentation", label: "MCP reference servers", url: "https://github.com/modelcontextprotocol/servers", note: "Example servers to read and extend." },
+  { id: "claude-models", group: "Documentation", label: "Claude models overview", url: "https://platform.claude.com/docs/en/about-claude/models/overview", note: "Current model ids, tiers, context windows, and output limits." },
+  { id: "claude-pricing", group: "Documentation", label: "Claude API pricing", url: "https://platform.claude.com/docs/en/about-claude/pricing", note: "Per-million-token prices by model, plus prompt caching and batch discounts." },
   { id: "pydantic", group: "Documentation", label: "Pydantic", url: "https://docs.pydantic.dev", note: "Schema validation for Python." },
   { id: "zod", group: "Documentation", label: "Zod", url: "https://zod.dev", note: "Schema validation for TypeScript; Zod 4 emits JSON Schema with z.toJSONSchema()." },
   { id: "json-schema", group: "Documentation", label: "JSON Schema reference", url: "https://json-schema.org/understanding-json-schema", note: "The schema language every structured-output mode speaks: types, required, additionalProperties, formats." },

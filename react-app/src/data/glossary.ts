@@ -22,6 +22,64 @@ export interface GlossaryTerm {
 
 export const GLOSSARY: GlossaryTerm[] = [
   {
+    id: "api-key",
+    term: "API key",
+    def: "A secret string that identifies your account to an API and bills usage to it. Treat it as a password: keep it in an ignored `.env` file, read it from an environment variable, and revoke it at once if it is ever exposed.",
+    more: "anthropic-api",
+  },
+  {
+    id: "context-window",
+    term: "Context window",
+    def: "The most tokens a model can handle in one call: the system prompt, the conversation so far, any documents, and the answer it writes, added together. A ceiling, not a target; long inputs cost more and can make answers worse.",
+    more: "claude-models",
+  },
+  {
+    id: "environment-variable",
+    term: "Environment variable",
+    def: "A named value the operating system passes to a running program, read in Python with `os.environ[\"NAME\"]`. Keeping secrets in environment variables keeps them out of source code and out of git.",
+  },
+  {
+    id: "hallucination",
+    term: "Hallucination",
+    def: "A fluent, confident model answer that is false, such as an invented citation or a function that does not exist. Nothing in the text marks it, so the defenses are structural: supply the facts, require citations, validate, and test.",
+  },
+  {
+    id: "llm",
+    term: "Large language model (LLM)",
+    aka: ["LLM", "language model", "model"],
+    def: "A program trained on a very large amount of text to predict the next token. Repeating that prediction one token at a time produces answers, code, and tool calls. It is stateless, probabilistic, and frozen at a training cutoff.",
+  },
+  {
+    id: "prompt-caching",
+    term: "Prompt caching",
+    def: "A provider feature that charges much less for a long prompt prefix, such as a system prompt or a document, that is sent again unchanged on later calls. It lowers cost and time without changing the model.",
+    more: "claude-pricing",
+  },
+  {
+    id: "stop-reason",
+    term: "Stop reason",
+    aka: ["stop_reason"],
+    def: "The field on every Claude API response that says why generation ended: `end_turn` when finished, `max_tokens` when cut off, `tool_use` when calling a tool, `refusal` when it declined. Check it on every call.",
+    more: "anthropic-api",
+  },
+  {
+    id: "top-p",
+    term: "Top-p",
+    aka: ["nucleus sampling"],
+    def: "A sampling setting that keeps only the most likely next tokens whose probabilities add up to p (for example 0.9) and picks among them. An alternative to temperature; change one or the other, not both.",
+  },
+  {
+    id: "virtual-environment",
+    term: "Virtual environment",
+    aka: ["venv", ".venv"],
+    def: "A folder (`.venv`) holding one project's own Python and installed packages, separate from every other project. With `requirements.txt` recording exact versions, the code keeps running the same way later and on another machine.",
+  },
+  {
+    id: "workflow-automation",
+    term: "Workflow automation",
+    def: "A fixed sequence of steps, drawn in advance and triggered by an event, such as \"when a form is submitted, create a ticket and send an email.\" The second rung of the decision ladder: deterministic, cheap, and easy to test.",
+  },
+  {
     id: "agent",
     term: "Agent",
     def: "A program in which a language model decides its own next step: which tool to call, with what arguments, in a loop, until the task is done or a limit is reached. The top rung of the decision ladder.",
@@ -30,7 +88,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   {
     id: "decision-ladder",
     term: "Decision ladder",
-    def: "This course's rule for how much AI a problem needs. Plain code, rules, and workflow tools at the bottom; a single model call in the middle; an agent at the top. Climb only as high as the problem forces you.",
+    def: "This course's rule for how much AI a problem needs, in four rungs: plain code and rules, workflow automation, a single model call, an agent. Each rung up trades predictability, cost, and testability for flexibility; climb only as high as the problem forces you.",
   },
   {
     id: "few-shot",

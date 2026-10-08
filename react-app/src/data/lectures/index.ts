@@ -8,9 +8,10 @@
 import { TERM_BY_ID, TERM_PATTERN } from "../glossary";
 import { MODULE_BY_ID, MODULES } from "../modules";
 import type { LectureNotesDef, ModuleDef, NoteBlock } from "../types";
+import { M01_NOTES } from "./m01";
 import { M02_NOTES } from "./m02";
 
-const ALL_NOTES: LectureNotesDef[] = [M02_NOTES];
+const ALL_NOTES: LectureNotesDef[] = [M01_NOTES, M02_NOTES];
 
 export const NOTES_BY_MODULE: Record<string, LectureNotesDef> = Object.fromEntries(
   ALL_NOTES.map((n) => [n.moduleId, n]),
